@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="themes/js/mui.min.js"></script>
+		<link href="themes/css/mui.min.css" rel="stylesheet" />
+		<link href="themes/css/app.css" rel="stylesheet" />
+		<title>登录</title>
+	</head>
+	<body class="logbody log_wall">
+		<div id="app">
+			<h2>子恒国际</h2>
+			<form class="logForm">
+				<div class="log_cell">					
+					<span>
+						<i class="mui-icon mui-icon-personadd"></i>
+						<input type="text" id="mobile" maxlength="11" placeholder="请输入用户名" />
+					</span>
+				</div>
+				<div class="log_cell">					
+					<span>
+						<i class="mui-icon mui-icon-locked"></i>
+						<input type="password" id="pwd" maxlength="16" placeholder="请输入密码" />
+					</span>
+				</div>
+				<div class="log_cell">
+					<button type="button" class="logBtn">登录</button>
+				</div>
+			</form>
+		</div>
+		<script src="themes/js/mui.min.js"></script>
+		<script src="themes/js/vue.js"></script>
+		<script src="themes/js/app.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			mui.plusReady(function() {
+				plus.navigator.closeSplashscreen();
+			});
+		</script>
+	</body>
+</html>

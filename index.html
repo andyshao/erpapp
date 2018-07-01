@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>首页</title>		
+		<link href="themes/css/mui.min.css" rel="stylesheet" />
+		<link href="themes/css/app.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<div id="app">
+			<div class="in_header">
+				<div class="in_top">
+					<p id="shopnames">--的店铺</p><span><i class="fa fa-envelope-o"></i></span>
+				</div>
+				<div class="in_sys">
+					<img src="themes/img/icon/1_03.png">
+				</div>
+				<div class="foot mui-clearfix">
+					<span class="span_th"><i class="mui-icon mui-icon-loop"></i>退货</span>
+					<span class="span_fh"><i class="mui-icon mui-icon-undo"></i>返货</span>
+				</div>
+			</div>
+			<div class="in_ornum mui-clearfix">
+				<div><strong id="dayo">0</strong><br>今日订单</div>
+				<div><strong id="daym">￥0</strong><br>今日营业额</div>
+			</div>
+			<div class="in_nav">
+				<ul class="mui-table-view mui-grid-view mui-grid-9">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3 dyroid">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/xiaoshou.png">
+							<div class="mui-media-body">销售管理</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3 dyroid">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/tongji.png">
+							<div class="mui-media-body">统计报表</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/pandian.png">
+							<div class="mui-media-body">盘点</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/tuihuo.png">
+							<div class="mui-media-body">退货管理</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/fanhuo.png">
+							<div class="mui-media-body">返货管理</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+						<a href="javascript:void(0)" id="homeCart">
+							<img src="themes/img/icon/cart.png"><span class="mui-badge mui-badge-red" style="display: none;">0</span>
+							<div class="mui-media-body">购物车</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" id="ccp_sale">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/cancip.png">
+							<div class="mui-media-body">残次品</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/jinhuolog.png">
+							<div class="mui-media-body">进货日志</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/jinhuopand.png">
+							<div class="mui-media-body">进货盘点</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3 dyroid">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/dianyuan.png">
+							<div class="mui-media-body">店员管理</div>
+						</a>
+					</li>				
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/huiyuan.png">
+							<div class="mui-media-body">会员管理</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+						<a href="javascript:void(0)">
+							<img src="themes/img/icon/shezhi.png">
+							<div class="mui-media-body">系统设置</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>		
+		<script src="themes/js/mui.min.js"></script>
+		<script src="themes/js/vue.js"></script>
+		<script src="themes/js/app.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			mui.plusReady(function() {
+				var userModel = GetSession('$userData');
+				if(userModel == null) {
+					goWin('login','login.html','');
+				} else {
+					plus.navigator.closeSplashscreen();
+				}
+			});
+		</script>
+	</body>
+
+</html>
