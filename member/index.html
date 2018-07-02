@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>会员管理</title>		
+		<link href="../themes/css/mui.min.css" rel="stylesheet" />
+		<link href="../themes/css/app.css" rel="stylesheet" />
+	</head>
+	<body class="mui-body">
+		<div id="app">
+			<div class="mem_search">
+				<div class="mui-input-row">
+					<form id="frmSearch" action="">
+					<input type="search" id="keys" class="mui-input-clear" placeholder="请输入号码或姓名搜索">
+					</form>
+				</div>
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media meblist" @click="modify">
+					<a href="javascript:;">
+						<div class="mui-media-object mui-pull-right">
+							<span class="mui-badge mui-badge-danger">100积分</span>							
+						</div>
+						<div class="mui-media-body">
+							姓名：张三
+							<p class='mui-ellipsis'>13888888888</p>
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media meblist" @click="modify">
+					<a href="javascript:;">
+						<div class="mui-media-object mui-pull-right">
+							<span class="mui-badge mui-badge-danger">100积分</span>							
+						</div>
+						<div class="mui-media-body">
+							姓名：张三
+							<p class='mui-ellipsis'>13888888888</p>
+						</div>
+					</a>
+				</li>
+			</ul>
+			<div class="fyt-add" @click="add"><i class="mui-icon mui-icon-plusempty"></i></div>
+		</div>
+		<script src="../themes/js/mui.min.js"></script>
+		<script src="../themes/js/vue.js"></script>
+		<script src="../themes/js/app.js"></script>
+		<script>
+			mui.init();
+			var vm = new Vue({
+				el: "#app",
+				data:{
+					
+				},
+				methods:{
+					add:function(){
+						goWin('memadd','add.html','添加会员');
+					},
+					modify:function(){
+						goWin('memadd','add.html','编辑会员');
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -29,31 +29,31 @@
 			</div>
 			<div class="in_nav">
 				<ul class="mui-table-view mui-grid-view mui-grid-9">
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3 dyroid">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('销售管理','sale','sale/index.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/xiaoshou.png">
 							<div class="mui-media-body">销售管理</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3 dyroid">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('统计报表','sale','sale/report.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/tongji.png">
 							<div class="mui-media-body">统计报表</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('库存盘点','sale','sale/inventory.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/pandian.png">
-							<div class="mui-media-body">盘点</div>
+							<div class="mui-media-body">库存盘点</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('退货管理','backlog','stock/back-log.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/tuihuo.png">
 							<div class="mui-media-body">退货管理</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('返货管理','retnrulog','stock/return-log.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/fanhuo.png">
 							<div class="mui-media-body">返货管理</div>
@@ -68,34 +68,34 @@
 					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" id="ccp_sale">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/cancip.png">
-							<div class="mui-media-body">残次品</div>
+							<div class="mui-media-body">残次品销售</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('进货日志','inlog','stock/inlog.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/jinhuolog.png">
 							<div class="mui-media-body">进货日志</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('进货盘点','incheck','stock/incheck.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/jinhuopand.png">
 							<div class="mui-media-body">进货盘点</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3 dyroid">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('店员管理','staffindex','staff/index.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/dianyuan.png">
 							<div class="mui-media-body">店员管理</div>
 						</a>
 					</li>				
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('会员管理','memindex','member/index.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/huiyuan.png">
 							<div class="mui-media-body">会员管理</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('系统设置','setindex','setup/index.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/shezhi.png">
 							<div class="mui-media-body">系统设置</div>
@@ -110,11 +110,32 @@
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
 			mui.plusReady(function() {
-				var userModel = GetSession('$userData');
+				plus.navigator.closeSplashscreen();
+				/*var userModel = GetSession('$userData');
 				if(userModel == null) {
-					goWin('login','login.html','');
+					mui.openWindow({
+						url: 'login.html',
+						id: 'login',
+						show: {
+							event: "loaded"
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
 				} else {
 					plus.navigator.closeSplashscreen();
+				}*/
+			});
+			var vm = new Vue({
+				el: "#app",
+				data:{
+					
+				},
+				methods:{
+					goPage:function(title,id,url){
+						goWin(id,url,title);
+					}
 				}
 			});
 		</script>

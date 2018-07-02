@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>进货日志</title>
+		<link href="../themes/css/mui.min.css" rel="stylesheet" />
+		<link href="../themes/css/app.css" rel="stylesheet" />
+	</head>
+	<body class="mui-body">
+		<div id="app">
+			<div class="mui-card" @click="detail">
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						这里面是名称名称
+						<div class="log-footer">
+							<span>10</span>件
+							<span class="time">2018-07-01</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mui-card" @click="detail">
+				<div class="mui-card-content">
+					<div class="mui-card-content-inner">
+						这里面是名称名称
+						<div class="log-footer">
+							<span>10</span>件
+							<span class="time">2018-07-01</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../themes/js/mui.min.js"></script>
+		<script src="../themes/js/vue.js"></script>
+		<script src="../themes/js/app.js"></script>
+		<script>
+			mui.init();
+			var vm = new Vue({
+				el: "#app",
+				data:{
+					
+				},
+				methods:{
+					detail:function(){
+						goWin('inlogdetail','inlog-detail.html','进货日志详情');
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -160,7 +160,44 @@
 			"index.html": {
 				"resources": [],
 				"refer": [
-					"login.html"
+					"login.html",
+					"setup/index.html",
+					"member/index.html",
+					"staff/index.html",
+					"stock/inlog.html",
+					"stock/incheck.html",
+					"sale/inventory.html"
+				],
+				"priority": 0
+			},
+			"setup/index.html": {
+				"resources": [],
+				"refer": [
+					"setup/server.html",
+					"setup/editpwd.html",
+					"setup/message.html"
+				],
+				"priority": 0
+			},
+			"staff/index.html": {
+				"resources": [],
+				"refer": [
+					"staff/add.html"
+				],
+				"priority": 0
+			},
+			"stock/inlog.html": {
+				"resources": [],
+				"refer": [
+					"stock/inlog-detail.html"
+				],
+				"priority": 0
+			},
+			"stock/incheck.html": {
+				"resources": [],
+				"refer": [
+					"stock/inlog-detail.html",
+					"stock/incheck-confirm.html"
 				],
 				"priority": 0
 			}

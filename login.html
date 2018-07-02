@@ -3,7 +3,6 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<script src="themes/js/mui.min.js"></script>
 		<link href="themes/css/mui.min.css" rel="stylesheet" />
 		<link href="themes/css/app.css" rel="stylesheet" />
 		<title>登录</title>
@@ -15,17 +14,17 @@
 				<div class="log_cell">					
 					<span>
 						<i class="mui-icon mui-icon-personadd"></i>
-						<input type="text" id="mobile" maxlength="11" placeholder="请输入用户名" />
+						<input type="text" v-model="model.loginname" maxlength="11" placeholder="请输入用户名" />
 					</span>
 				</div>
 				<div class="log_cell">					
 					<span>
 						<i class="mui-icon mui-icon-locked"></i>
-						<input type="password" id="pwd" maxlength="16" placeholder="请输入密码" />
+						<input type="password" v-model="model.loginpwd" maxlength="16" placeholder="请输入密码" />
 					</span>
 				</div>
 				<div class="log_cell">
-					<button type="button" class="logBtn">登录</button>
+					<button type="button" class="logBtn" @click="logins">登录</button>
 				</div>
 			</form>
 		</div>
@@ -33,9 +32,27 @@
 		<script src="themes/js/vue.js"></script>
 		<script src="themes/js/app.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			mui.init();
+			mui.init();			
 			mui.plusReady(function() {
 				plus.navigator.closeSplashscreen();
+				mui.back=function(){
+					return;
+				};
+			});
+			var vm = new Vue({
+				el: "#app",
+				data:{
+					model:{
+						loginname:'',
+						loginpwd:''
+					}
+				},
+				methods:{
+					logins:function(){
+						var ws=plus.webview.currentWebview();
+						ws.close();
+					}
+				}
 			});
 		</script>
 	</body>
