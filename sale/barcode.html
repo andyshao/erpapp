@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>条形码扫描</title>
+		<link href="../themes/css/mui.min.css" rel="stylesheet" />
+		<link href="../themes/css/app.css" rel="stylesheet" />
+	</head>
+
+	<body class="barcode-body">
+		<div id="app">
+			<div id="bcid">
+				<div style="height:40%"></div>
+				<p class="tip">...载入中...</span></p>
+			</div>
+			<footer class="barcode-footer">
+				<div @click="cancels">取　 消</div>
+				<div @click="manualInput">手动输入</div>
+			</footer>
+		</div>
+		<script src="../themes/js/mui.min.js"></script>
+		<script src="../themes/js/vue.js"></script>
+		<script src="../themes/js/app.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			var ws = null,wo = null,scan = null,domready = false,barJson=GetSession('$barcode');
+			var vm = new Vue({
+				el: "#app",
+				data: {
+
+				},
+				methods: {
+					cancels:function(){
+						scan.cancel();
+						scan.close();
+						var wc=plus.webview.currentWebview();
+		    			wc.close();
+					},
+					manualInput:function(){
+						goWin('manualInput','barcode-input.html','手动输入');
+						setTimeout(function(){
+							scan.cancel();
+							scan.close();
+						},200);						
+					}
+				}
+			});
+			var os={
+				
+			}		
+			
+			mui.init({
+				swipeBack:true
+			});
+			//重写返回键
+			mui.back=function(){
+				scan.cancel();
+				scan.close();
+				var wc=plus.webview.currentWebview();
+    			wc.close();
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			}
+			// 监听DOMContentLoaded事件
+			document.addEventListener("DOMContentLoaded", function() {
+				domready = true;
+				plusReady();
+			}, false);
+			// 二维码扫描成功
+			function onmarked(type, result, file) {
+				switch(type) {
+					case plus.barcode.QR:
+						type = "QR";
+						break;
+					case plus.barcode.EAN13:
+						type = "EAN13";
+						break;
+					case plus.barcode.EAN8:
+						type = "EAN8";
+						break;
+					default:
+						type = "其它" + type;
+						break;
+				}
+				result = result.replace(/\n/g, '');
+				scan.cancel();
+				scan.close();
+				if(barJson!=null){	
+					barJson.code=result;
+					SetSession('$barcode',barJson);
+					if(barJson.type==4){ //残次品销售
+						goWin('goodscanci','goods-canci.html','残次品销售');
+					}
+					if(barJson.type==3){ //退货
+						goWin('goodsback','goods-back.html','详情');
+					}
+					if(barJson.type==2){ //返货
+						goWin('goodsreturn','goods-return.html','详情');
+					}
+					if(barJson.type==1){ //进货盘点
+						goWin('goodsincheck','goods-incheck.html','详情');
+					}
+					if(barJson.type==0){ //销售
+						goWin('goods','goods.html','详情');
+					}
+				}
+				
+			};
+			function plusReady() {
+				if(ws || !window.plus || !domready) {
+					return;
+				}		
+				// 获取窗口对象
+				ws = plus.webview.currentWebview();
+				wo = ws.opener();
+				// 开始扫描
+				var filter = [plus.barcode.QR,plus.barcode.AZTEC,plus.barcode.CODE128,plus.barcode.CODE39];
+				ws.addEventListener('show', function() {
+					scan = new plus.barcode.Barcode('bcid',filter);
+					scan.onmarked = onmarked;
+					scan.start({
+						conserve: true,
+						filename: "_doc/barcode/"
+					});
+				});
+				// 显示页面并关闭等待框
+				ws.show("pop-in");
+				//wo.evalJS("closeWaiting()");
+			}			
+		</script>
+	</body>
+
+</html>

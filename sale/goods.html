@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>商品详情</title>
+		<link href="../themes/css/mui.min.css" rel="stylesheet" />
+		<link href="../themes/css/app.css" rel="stylesheet" />
+	</head>
+	<body class="mui-body">
+		<div id="app">
+			<div class="good-wall">
+				<div class="good_code">
+					<div id="bcTarget"><img src="../themes/img/code.png" /></div>
+					<p>ASDF6645645-6645</p>
+				</div>
+				<div class="good-info">
+					<h4>无此商品</h4>
+					<p>款式：--　　尺码：--　　</p>
+					<p><span>商品单价</span><strong>￥50元</strong></p>
+					<p><span>收款商家</span><strong>测试商家</strong></p>
+					<p><span>账单编号</span><strong>64564645645645</strong></p>
+					<p><span>下单时间</span><strong class="red">2018-07-01</strong></p>
+					<p><span>折扣方式</span><strong>--</strong></p>
+				</div>
+				<div class="det_item mui-clearfix"><span>是否会员</span>
+					<div class="mui-switch"><div class="mui-switch-handle"></div></div>
+				</div>
+				<div class="det_item memphone mui-hidden">
+					<input type="text" class="" placeholder="请输入会员手机号码">
+				</div>
+				<div class="mui-numbox buy-num" data-numbox-min='1' data-numbox-max='100'>
+					<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
+					<input id="goodnum" class="mui-input-numbox" type="number" value="1" />
+					<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
+				</div>
+			</div>
+			<div class="barcode-foot mui-clearfix">
+				<button type="button"  class="mui-btn mui-btn-danger">加入购物车</button>
+				<button type="button" @click="goPrint" class="mui-btn mui-btn-danger">确认消费</button>
+			</div>
+		</div>
+		<script src="../themes/js/mui.min.js"></script>
+		<script src="../themes/js/zepto.min.js"></script>
+		<script src="../themes/js/vue.js"></script>
+		<script src="../themes/js/app.js"></script>
+		<script>
+			var vm = new Vue({
+				el: "#app",
+				data: {
+					
+				},
+				methods: {
+					goPrint:function(){
+						goWin('print','print.html','小票打印');
+					}
+				}
+			});	
+			mui.init({
+				swipeBack:true
+			});
+			mui('.det_item .mui-switch').each(function() {				
+				this.addEventListener('toggle', function(event) {
+					if(event.detail.isActive){
+						$(".memphone").removeClass('mui-hidden');
+					}else{
+						$(".memphone").addClass('mui-hidden');
+					}
+				});
+			});
+			//重写返回键
+			mui.back=function(){
+				var wsbar = plus.webview.getWebviewById('barcode');
+				if(wsbar!=null){
+					wsbar.close();
+				}	
+				var wc=plus.webview.currentWebview();
+    			wc.close();
+			}
+		</script>
+	</body>
+</html>

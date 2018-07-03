@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>退货</title>
+		<link href="../themes/css/mui.min.css" rel="stylesheet" />
+		<link href="../themes/css/app.css" rel="stylesheet" />
+	</head>
+	<body class="mui-body">
+		<div id="app">
+			<div class="good-wall">
+				<div class="good_code">
+					<div id="bcTarget"><img src="../themes/img/code.png" /></div>
+					<p>ASDF6645645-6645</p>
+				</div>
+				<div class="good-info">
+					<div class="mui-input-row thforms">
+						<label>退款金额</label>
+						<input type="number" class="mui-input-clear" maxlength="5" placeholder="请输入金额">
+					</div>
+					<div class="mui-input-row thforms">
+						<label>退款订单号</label>
+						<input type="text" class="mui-input-clear" maxlength="20" placeholder="请输入订单号">
+					</div>
+					<div class="mui-input-row thforms" style="margin: 10px 5px;">
+						<textarea rows="4" placeholder="请输入退货原因"></textarea>
+					</div>
+				</div>
+				<div class="mui-numbox buy-num" data-numbox-min='1' data-numbox-max='100'>
+					<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
+					<input id="goodnum" class="mui-input-numbox" type="number" value="1" />
+					<button class="mui-btn mui-btn-numbox-plus" type="button">+</button>
+				</div>				
+			</div>
+			<div class="barcode-foot mui-clearfix">
+				<button type="button" id="btnGoods" class="mui-btn mui-btn-danger" style="width: 100%;">退货</button>
+			</div>
+		</div>
+		<script src="../themes/js/mui.min.js"></script>
+		<script src="../themes/js/zepto.min.js"></script>
+		<script src="../themes/js/vue.js"></script>
+		<script src="../themes/js/app.js"></script>
+		<script>
+			var barJson=GetSession('$barcode'),vm = new Vue({
+				el: "#app",
+				data: {
+					
+				},
+				methods: {
+					
+				}
+			});	
+			mui.init({
+				swipeBack:true
+			});			
+			//重写返回键
+			mui.back=function(){
+				var wsbar = plus.webview.getWebviewById('barcode');
+				if(wsbar!=null){
+					wsbar.close();
+				}	
+				var wc=plus.webview.currentWebview();
+    			wc.close();
+			}
+		</script>
+	</body>
+</html>

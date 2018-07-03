@@ -15,21 +15,21 @@
 				<div class="in_top">
 					<p id="shopnames">--的店铺</p><span><i class="fa fa-envelope-o"></i></span>
 				</div>
-				<div class="in_sys">
+				<div class="in_sys" @click="goScanCode(0)">
 					<img src="themes/img/icon/1_03.png">
 				</div>
 				<div class="foot mui-clearfix">
-					<span class="span_th"><i class="mui-icon mui-icon-loop"></i>退货</span>
-					<span class="span_fh"><i class="mui-icon mui-icon-undo"></i>返货</span>
+					<span class="span_th" @click="goScanCode(3)"><i class="mui-icon mui-icon-loop"></i>退货</span>
+					<span class="span_fh" @click="goReturn"><i class="mui-icon mui-icon-undo"></i>返货</span>
 				</div>
 			</div>
 			<div class="in_ornum mui-clearfix">
-				<div><strong id="dayo">0</strong><br>今日订单</div>
-				<div><strong id="daym">￥0</strong><br>今日营业额</div>
+				<div @click="goPageRbtn('营业额','turnover','sale/day.html')"><strong id="dayo">0</strong><br>今日订单</div>
+				<div @click="goPageRbtn('营业额','turnover','sale/day.html')"><strong id="daym">￥0</strong><br>今日营业额</div>
 			</div>
 			<div class="in_nav">
 				<ul class="mui-table-view mui-grid-view mui-grid-9">
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('销售管理','sale','sale/index.html')">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPageRbtn('销售管理','sale','sale/index.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/xiaoshou.png">
 							<div class="mui-media-body">销售管理</div>
@@ -65,7 +65,7 @@
 							<div class="mui-media-body">购物车</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" id="ccp_sale">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goScanCode(4)">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/cancip.png">
 							<div class="mui-media-body">残次品销售</div>
@@ -135,6 +135,37 @@
 				methods:{
 					goPage:function(title,id,url){
 						goWin(id,url,title);
+					},
+					goPageRbtn:function(title,id,url){
+						goWinRbtn(id,url,title,function(){
+							var ws= plus.webview.getWebviewById(id);
+							mui.fire(ws,'customEvent');
+						},'\ue466');
+					},
+					/*
+					 0=销售 1=进货盘点  2=返货  3=退货  4=残次品销售
+					 * */
+					goScanCode:function(t){
+						SetSession('$barcode',{type:t,code:''});
+						mui.openWindow({
+							url: 'sale/barcode.html',
+							id: 'barcode',
+							show: {
+								event: "loaded"
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
+					},
+					/*
+					 * 返货  去往返货清单
+					 */
+					goReturn:function(){
+						goWinRbtn('returnorder','sale/return-order.html','返货清单',function(){
+							var ws= plus.webview.getWebviewById('returnorder');
+							mui.fire(ws,'customEvent');
+						},'\ue409');
 					}
 				}
 			});

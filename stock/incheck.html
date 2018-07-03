@@ -44,7 +44,10 @@
 				},
 				methods:{
 					detail:function(){
-						goWin('inlogdetail','incheck-confirm.html','进货盘点清单');
+						goWinRbtn('inlogdetail','incheck-confirm.html','进货盘点清单',function(){
+							var ws= plus.webview.getWebviewById('inlogdetail');
+							mui.fire(ws,'customEvent');
+						},'\ue409');
 					}
 				}
 			});

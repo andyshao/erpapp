@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>营业额</title>
+		<link href="../themes/css/mui.min.css" rel="stylesheet" />
+		<link href="../themes/css/iconfont.css" rel="stylesheet" />
+		<link href="../themes/css/app.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<div id="app">
+			<div class="now_month"><span>{{showText}}</span></div>
+			<div class="in_ornum day_wall mui-clearfix">
+				<div><strong id="dayo">0</strong><br><span id="noworder">{{showText}}订单</span></div>
+				<div><strong id="daym">￥0</strong><br><span id="nowmoney">{{showText}}营业额</span></div>
+			</div>
+			<ul class="mui-table-view inv-item report-item">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<span class="mui-media-object mui-pull-right"><strong>10</strong>件</span>
+						<div class="mui-media-body">商品名称</div>
+						<p class='mui-ellipsis'>46556464646464</p>
+					</a>
+				</li>
+			</ul>
+			<div class="page-cover turnover-cover" @click="closeWhere"></div>
+			<div class="fyt-chwall turnover-chwall">
+				<div class="mui-scroll">
+					<h5 class="sel_time"><i class="iconfont icon-riqi"></i><span @click="openDate(1)">{{whereParm.btime}}</span></h5>
+					<h5 class="sel_time"><i class="iconfont icon-riqi"></i><span @click="openDate(2)">{{whereParm.etime}}</span></h5>
+					<div class="cs-wall mui-clearfix">
+					</div>
+					<h5>类型<span></span></h5>
+					<div class="cd-wall">
+						<span @click="selday(1)" :class="{cur:selDay==1}">本日</span>
+						<span @click="selday(2)" :class="{cur:selDay==2}">本月</span>
+					</div>
+				</div>
+				<div class="fyt-foot-button mui-clearfix">
+					<span class="cz" @click="resetWhere">重置</span><span class="success" @click="findWhere">确定</span>
+				</div>
+			</div>
+		</div>
+		<script src="../themes/js/mui.min.js"></script>
+		<script src="../themes/js/zepto.min.js"></script>
+		<script src="../themes/js/vue.js"></script>
+		<script src="../themes/js/app.js"></script>
+		<script>			
+			var _self,isOpenWhere=false;
+			mui.init();
+			mui.plusReady(function() {
+				plusReady();				
+				window.addEventListener('customEvent',function(event){
+				   	if(!isOpenWhere){
+						os.openWhere();
+					}else{
+						os.closeWhere();
+					}	
+				})
+			});
+
+			function plusReady() {
+				_self = plus.webview.currentWebview();
+				_self.setPullToRefresh({
+					support: true,
+					height: '50px',
+					range: '150px',
+					style: 'circle',
+					offset: '105px'
+				}, pulldownRefresh);
+			}
+
+			function pulldownRefresh() {
+				setTimeout(function() {
+					_self.endPullToRefresh();
+				}, 500);
+			}
+			var vm = new Vue({
+				el: "#app",
+				data: {
+					selDay:1,
+					showText:'今日',
+					whereParm:{
+						btime:'请选择开始时间',
+						etime:'请选择结束时间'
+					},
+				},
+				created:function(){
+					$(".cd-wall span").click(function() {
+						$(this).addClass("cur").siblings().removeClass('cur');
+					});
+				},
+				methods: {
+					findWhere:function(){
+						//确定查询
+						os.closeWhere();
+						if(this.selDay==1){
+							this.showText='今日';
+						}else{
+							this.showText='本月';
+						}
+					},
+					wheres:function(){						
+						os.openWhere();
+					},
+					openDate:function(m){
+						os.pickDate(m);
+					},
+					closeWhere:function(){
+						os.closeWhere();
+					},
+					resetWhere:function(){
+						this.whereParm.btime='请选择开始时间';
+						this.whereParm.etime='请选择结束时间';
+						this.selDay=1;
+					},
+					selday:function(m){
+						this.whereParm.btime='请选择开始时间';
+						this.whereParm.etime='请选择结束时间';
+						this.selDay=m;						
+					}
+				}
+			});
+			var os={
+				closeWhere:function(){
+					$('.page-cover,.fyt-chwall').hide(600);
+					isOpenWhere=false;
+				},
+				openWhere:function(){					
+					$('.page-cover,.fyt-chwall').show(600);
+					isOpenWhere=true;
+				},
+				pickDate:function(objs){
+					var dDate = new Date();
+					var minDate = new Date();
+					minDate.setFullYear(2010, 0, 1);
+					var maxDate = new Date();
+					maxDate.setFullYear(2050, 12, 31);
+					plus.nativeUI.pickDate(function(e) {
+						var d = e.date;
+						if(objs==1){
+							vm.whereParm.btime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						}
+						if(objs==2){
+							vm.whereParm.etime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						}
+					}, function(e) {
+					}, {
+						title: "",
+						date: dDate,
+						minDate: minDate,
+						maxDate: maxDate
+					});
+				}
+			}
+		</script>
+	</body>
+
+</html>

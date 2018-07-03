@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title>盘点</title>
 		<link href="../themes/css/mui.min.css" rel="stylesheet" />
+		<link href="../themes/css/iconfont.css" rel="stylesheet" />
 		<link href="../themes/css/swiper-4.3.3.min.css" rel="stylesheet" />
 		<link href="../themes/css/app.css" rel="stylesheet" />
 		<style>
@@ -37,30 +38,117 @@
 						</div>
 					</div>					
 				</div>
-				<div class="fyt-slide" @click="wheres"><span>筛选</span></div>
+				<div class="fyt-slide" @click="wheres"><span id="where">筛选 <i class="iconfont icon-iconfontzhizuobiaozhun023125"></i></span></div>
 			</div>
 			<div class="swiper-container" id="page">
 				<div class="swiper-wrapper">
 					<div class="swiper-slide slidepage">
-						<div style="height: 100px;">a</div>
-						<div style="height: 100px;">a</div>
-						<div style="height: 100px;">a</div>
-						<div style="height: 100px;">a</div>
-						<div style="height: 100px;">a</div>
-						<div style="height: 100px;">a</div>
-						<div style="height: 100px;">a</div>
-						<div style="height: 100px;">a</div>
-						<div style="height: 100px;">a</div>
-						<div style="height: 100px;">a</div>
+						<ul class="mui-table-view inv-item">
+							<li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<div class="mui-media-object mui-pull-right">
+										<span class="fh_status pd_bar"><tt></tt></span>
+										<p class="red">0/0</p>
+									</div>
+									<div class="mui-media-body">
+										商品名称
+										<p class='mui-ellipsis'>65465464564646464</p>
+									</div>
+								</a>
+							</li>	
+							<li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<div class="mui-media-object mui-pull-right">
+										<span class="fh_status pd_bar"><tt></tt></span>
+										<p class="red">0/0</p>
+									</div>
+									<div class="mui-media-body">
+										商品名称
+										<p class='mui-ellipsis'>65465464564646464</p>
+									</div>
+								</a>
+							</li>	
+						</ul>
 					</div>
 					<div class="swiper-slide slidepage">
-						<div style="height: 100px;">a</div>
+						<ul class="mui-table-view inv-item">
+							<li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<div class="mui-media-object mui-pull-right">
+										<span class="fh_status pd_bar"><tt></tt></span>
+										<p class="red">0/0</p>
+									</div>
+									<div class="mui-media-body">
+										商品名称
+										<p class='mui-ellipsis'>65465464564646464</p>
+									</div>
+								</a>
+							</li>	
+							<li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<div class="mui-media-object mui-pull-right">
+										<span class="fh_status pd_bar"><tt></tt></span>
+										<p class="red">0/0</p>
+									</div>
+									<div class="mui-media-body">
+										商品名称
+										<p class='mui-ellipsis'>65465464564646464</p>
+									</div>
+								</a>
+							</li>	
+							<li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<div class="mui-media-object mui-pull-right">
+										<span class="fh_status pd_bar"><tt></tt></span>
+										<p class="red">0/0</p>
+									</div>
+									<div class="mui-media-body">
+										商品名称
+										<p class='mui-ellipsis'>65465464564646464</p>
+									</div>
+								</a>
+							</li>	
+							<li class="mui-table-view-cell mui-media">
+								<a href="javascript:;">
+									<div class="mui-media-object mui-pull-right">
+										<span class="fh_status pd_bar"><tt></tt></span>
+										<p class="red">0/0</p>
+									</div>
+									<div class="mui-media-body">
+										商品名称
+										<p class='mui-ellipsis'>65465464564646464</p>
+									</div>
+								</a>
+							</li>	
+						</ul>
 					</div>
 				</div>
 			</div>
-		</div>
+			
+			<div class="page-cover" @click="closeWhere"></div>
+			<div class="fyt-chwall">
+				<div class="mui-scroll">
+					<h5 class="sel_time"><i class="iconfont icon-riqi"></i><span @click="openDate(1)">{{whereParm.btime}}</span></h5>
+					<h5 class="sel_time"><i class="iconfont icon-riqi"></i><span @click="openDate(2)">{{whereParm.etime}}</span></h5>
+					<div class="cs-wall mui-clearfix">
+					</div>
+					<h5>品牌<span></span></h5>
+					<div class="cd-wall">
+						<span @click="selBrank()" :class="{cur:true}">测试品牌</span>
+						<span @click="selBrank()" :class="{cur:false}">测试品牌</span>
+						<span @click="selBrank()" :class="{cur:false}">测试品牌</span>
+						<span @click="selBrank()" :class="{cur:false}">测试品牌</span>
+					</div>
+				</div>
+				<div class="fyt-foot-button mui-clearfix">
+					<span class="cz" @click="resetWhere">重置</span><span class="success" @click="findWhere">确定</span>
+				</div>
+			</div>
+			
+		</div>		
 		<script src="../themes/js/mui.min.js"></script>
 		<script src="../themes/js/swiper-4.3.3.min.js"></script>
+		<script src="../themes/js/zepto.min.js"></script>
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
@@ -68,22 +156,90 @@
 			var vm = new Vue({
 				el: "#app",
 				data: {
-
+					whereParm:{
+						btime:'请选择开始时间',
+						etime:'请选择结束时间',
+						blank:''
+					}
+				},
+				created:function(){
+					$(".cd-wall span").click(function() {
+						$(this).addClass("cur").siblings().removeClass('cur');
+					});
 				},
 				methods: {
-					wheres:function(){
-						var winw=document.body.clientWidth;
-						winw=winw-winw/3-10;
-						document.getElementById('bar').style.transform ='translateX('+winw+'px)';
-						mui("#nav .swiper-slide").each(function () {	
-							this.find('span').css('color', 'rgba(51,51,51,1)');						  
-						});
+					findWhere:function(){
+						//确定查询
+						os.closeWhere();
+					},
+					wheres:function(){						
+						os.openWhere();
+					},
+					openDate:function(m){
+						os.pickDate(m);
+					},
+					closeWhere:function(){
+						os.closeWhere();
+					},
+					resetWhere:function(){
+						this.whereParm.btime='请选择开始时间';
+						this.whereParm.etime='请选择开始时间';
+						this.whereParm.blank='';
+					},
+					selBrank:function(){
+						
 					}
 				}
 			});
+
+			var os={
+				closeWhere:function(){
+					$('.page-cover,.fyt-chwall').hide(600);
+					var activeSlidePosition = navSwiper.slides[curIndex].offsetLeft;
+					bar.transform('translateX(' + activeSlidePosition + 'px)');
+					mui("#nav .swiper-slide span").each(function () {	
+						this.style.color='rgba(51,51,51,1)';
+					});
+					document.getElementById('where').style.color='rgba(51,51,51,1)';
+					$("#nav .swiper-slide").eq(curIndex).find('span').css('color','rgba(255,80,83,1)');
+				},
+				openWhere:function(){
+					var winw=document.body.clientWidth;
+					winw=winw-winw/3-5;
+					document.getElementById('bar').style.transform ='translateX('+winw+'px)';
+					mui("#nav .swiper-slide span").each(function () {	
+						this.style.color='rgba(51,51,51,1)';
+					});
+					document.getElementById('where').style.color='rgba(255,80,83,1)';
+					$('.page-cover,.fyt-chwall').show(600);
+				},
+				pickDate:function(objs){
+					var dDate = new Date();
+					var minDate = new Date();
+					minDate.setFullYear(2010, 0, 1);
+					var maxDate = new Date();
+					maxDate.setFullYear(2050, 12, 31);
+					plus.nativeUI.pickDate(function(e) {
+						var d = e.date;
+						if(objs==1){
+							vm.whereParm.btime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						}
+						if(objs==2){
+							vm.whereParm.etime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						}
+					}, function(e) {
+					}, {
+						title: "",
+						date: dDate,
+						minDate: minDate,
+						maxDate: maxDate
+					});
+				}
+			}
+			
 			barwidth = 60 //导航粉色条的长度px
 			tSpeed = 300 //切换速度300ms
-			var navSwiper = new Swiper('#nav', {
+			var curIndex=0,navSwiper = new Swiper('#nav', {
 				slidesPerView: 3,
 				freeMode: true,
 				on: {
@@ -106,7 +262,6 @@
 
 				},
 			});
-
 			var pageSwiper = new Swiper('#page', {
 				watchSlidesProgress: true,
 				resistanceRatio: 0,
@@ -120,40 +275,31 @@
 							slideProgress = this.slides[i].progress
 							if(Math.abs(slideProgress) < 1) {
 								r = Math.floor((255 - 51) * (1 - Math.pow(Math.abs(slideProgress), 2)) + 51)
-								g = Math.floor((72 - 51) * (1 - Math.pow(Math.abs(slideProgress), 2)) + 51)
-								b = Math.floor((145 - 51) * (1 - Math.pow(Math.abs(slideProgress), 2)) + 51)
+								g = Math.floor((80 - 51) * (1 - Math.pow(Math.abs(slideProgress), 2)) + 51)
+								b = Math.floor((83 - 51) * (1 - Math.pow(Math.abs(slideProgress), 2)) + 51)
 								navSwiper.slides.eq(i).find('span').css('color', 'rgba(' + r + ',' + g + ',' + b + ',1)')
 							}
 						}
 					},
 					transitionStart: function() {
-						activeIndex = this.activeIndex
-						activeSlidePosition = navSwiper.slides[activeIndex].offsetLeft
+						document.getElementById('where').style.color='rgba(51,51,51,1)';
+						curIndex = this.activeIndex;
+						activeSlidePosition = navSwiper.slides[curIndex].offsetLeft
 						//释放时导航粉色条移动过渡
 						bar.transition(tSpeed)
 						bar.transform('translateX(' + activeSlidePosition + 'px)')
 						//释放时文字变色过渡
-						navSwiper.slides.eq(activeIndex).find('span').transition(tSpeed)
-						navSwiper.slides.eq(activeIndex).find('span').css('color', 'rgba(255,80,83,1)')
-						if(activeIndex > 0) {
-							navSwiper.slides.eq(activeIndex - 1).find('span').transition(tSpeed)
-							navSwiper.slides.eq(activeIndex - 1).find('span').css('color', 'rgba(51,51,51,1)')
+						navSwiper.slides.eq(curIndex).find('span').transition(tSpeed)
+						navSwiper.slides.eq(curIndex).find('span').css('color', 'rgba(255,80,83,1)')
+						if(curIndex > 0) {
+							navSwiper.slides.eq(curIndex - 1).find('span').transition(tSpeed)
+							navSwiper.slides.eq(curIndex - 1).find('span').css('color', 'rgba(51,51,51,1)')
 						}
-						if(activeIndex < this.slides.length) {
-							navSwiper.slides.eq(activeIndex + 1).find('span').transition(tSpeed)
-							navSwiper.slides.eq(activeIndex + 1).find('span').css('color', 'rgba(51,51,51,1)')
+						if(curIndex < this.slides.length) {
+							navSwiper.slides.eq(curIndex + 1).find('span').transition(tSpeed)
+							navSwiper.slides.eq(curIndex + 1).find('span').css('color', 'rgba(51,51,51,1)')
 						}
-						//导航居中
-						navActiveSlideLeft = navSwiper.slides[activeIndex].offsetLeft //activeSlide距左边的距离
-
-						navSwiper.setTransition(tSpeed)
-						if(navActiveSlideLeft < (clientWidth - parseInt(navSlideWidth)) / 2) {
-							navSwiper.setTranslate(0)
-						} else if(navActiveSlideLeft > navWidth - (parseInt(navSlideWidth) + clientWidth) / 2) {
-							//navSwiper.setTranslate(clientWidth - navWidth)
-						} else {
-							//navSwiper.setTranslate((clientWidth - parseInt(navSlideWidth)) / 2 - navActiveSlideLeft)
-						}
+						
 
 					},
 				}
@@ -163,13 +309,16 @@
 				e.preventDefault() //去掉按压阴影
 			})
 			navSwiper.on('tap', function(e) {
-				clickIndex = this.clickedIndex
-				clickSlide = this.slides.eq(clickIndex)
-				pageSwiper.slideTo(clickIndex, 0);
+				curIndex = this.clickedIndex;
+				clickSlide = this.slides.eq(curIndex);
+				pageSwiper.slideTo(curIndex, 0);
 				this.slides.find('span').css('color', 'rgba(51,51,51,1)');
-				clickSlide.find('span').css('color', 'rgba(255,80,83,1)');
+				clickSlide.find('span').css('color', 'rgba(255,80,83,1)');		
+				document.getElementById('where').style.color='rgba(51,51,51,1)';
+				var activeSlidePosition = navSwiper.slides[curIndex].offsetLeft;
+				bar.transform('translateX(' + activeSlidePosition + 'px)');
+				os.closeWhere();
 			})
-
 		</script>
 	</body>
 

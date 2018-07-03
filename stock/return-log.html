@@ -55,7 +55,10 @@
 						goWin('returndetail','return-log-detail.html','返货订单详情');
 					},
 					add:function(){
-						mui.toast('去二维码扫描区');
+						goWinRbtn('returnorder','../sale/return-order.html','返货清单',function(){
+							var ws= plus.webview.getWebviewById('returnorder');
+							mui.fire(ws,'customEvent');
+						},'\ue409');
 					}
 				}
 			});

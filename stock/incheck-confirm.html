@@ -38,7 +38,6 @@
 				<button type="button" class="mui-btn mui-btn-danger">清空</button>
 				<button type="button" class="mui-btn mui-btn-danger">提交</button>
 			</div>
-			<div class="fyt-add" @click="add"><i class="mui-icon mui-icon-plusempty"></i></div>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
 		<script src="../themes/js/vue.js"></script>
@@ -51,10 +50,26 @@
 					
 				},
 				methods:{
-					add:function(){
-						mui.toast('去二维码扫描区');
-					}
+					
 				}
+			});
+			mui.plusReady(function() {
+				window.addEventListener('customEvent', function(event) {
+					SetSession('$barcode', {
+						type: 1,
+						code: ''
+					});
+					mui.openWindow({
+						url: '../sale/barcode.html',
+						id: 'barcode',
+						show: {
+							event: "loaded"
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+				})
 			});
 		</script>
 	</body>

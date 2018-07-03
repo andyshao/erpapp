@@ -52,7 +52,17 @@
 				},
 				methods:{
 					add:function(){
-						mui.toast('去二维码扫描区');
+						SetSession('$barcode',{type:3,code:''});
+						mui.openWindow({
+							url: '../sale/barcode.html',
+							id: 'barcode',
+							show: {
+								event: "loaded"
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
 					}
 				}
 			});
