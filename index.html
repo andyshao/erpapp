@@ -111,9 +111,9 @@
 			mui.init();
 			mui.plusReady(function() {
 				plus.navigator.closeSplashscreen();
-				/*var userModel = GetSession('$userData');
+				var userModel = GetSession('$userData');
 				if(userModel == null) {
-					mui.openWindow({
+					mui.openWindow({ 
 						url: 'login.html',
 						id: 'login',
 						show: {
@@ -125,7 +125,7 @@
 					});
 				} else {
 					plus.navigator.closeSplashscreen();
-				}*/
+				}
 			});
 			var vm = new Vue({
 				el: "#app",

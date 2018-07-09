@@ -14,13 +14,13 @@
 				<div class="log_cell">					
 					<span>
 						<i class="mui-icon mui-icon-personadd"></i>
-						<input type="text" v-model="model.loginname" maxlength="11" placeholder="请输入用户名" />
+						<input type="text" v-model="model.loginName" maxlength="11" placeholder="请输入用户名" />
 					</span>
 				</div>
 				<div class="log_cell">					
 					<span>
 						<i class="mui-icon mui-icon-locked"></i>
-						<input type="password" v-model="model.loginpwd" maxlength="16" placeholder="请输入密码" />
+						<input type="password" v-model="model.loginPwd" maxlength="16" placeholder="请输入密码" />
 					</span>
 				</div>
 				<div class="log_cell">
@@ -39,18 +39,66 @@
 					return;
 				};
 			});
+			var natiopen;
 			var vm = new Vue({
 				el: "#app",
 				data:{
 					model:{
-						loginname:'',
-						loginpwd:''
+						loginName:'',
+						loginPwd:'',
+						isDevice:0,
+						deviceName:'',
+						token:''
 					}
 				},
 				methods:{
 					logins:function(){
-						var ws=plus.webview.currentWebview();
-						ws.close();
+						if(this.model.loginName==''){
+							mui.toast('请输入用户名');return;
+						}
+						if(this.model.loginPwd==''){
+							mui.toast('请输入密码');return;
+						}
+			            if(plus.os.name=="Android"){
+			            	this.isDevice=1;
+			            }
+			            var info = plus.push.getClientInfo();
+			            this.model.token=info.token;
+			            this.model.deviceName=plus.device.vendor;
+			            log(this.model);			            
+						natiopen=plus.nativeUI.showWaiting("登录中，请等待...", {modal:true});
+						var that=this;
+						console.log(httpUrl + 'app/api/user/login');
+						mui.ajax(httpUrl + 'app/api/user/login', {
+							data: that.model,
+							async: true,
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							success: function(data) {
+								log(data);
+								//callFun(data);
+							},
+							error: function(xhr, type, errorThrown) {
+								console.log(type);
+								if(type == 'timeout') {
+									mui.toast('连接超时，请稍后重试！');
+								} else if(type == 'error') {
+									mui.toast('连接异常，请稍后重试！');
+								}
+							}
+						});
+						/*baseAjax('app/api/user/login',this.model,function(res){
+							log(res);
+							natiopen.close();
+							if(res.statusCode==200){
+								SetSession('$LoginUser',res.data);
+								var ws=plus.webview.currentWebview();
+								ws.close();
+							}else{
+								mui.toast(res.message);
+							}
+						});*/						
 					}
 				}
 			});

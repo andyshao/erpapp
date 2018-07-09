@@ -1,78 +1,78 @@
 {
-	"index.html": {
-		"refer": [
-			"login.html",
-			"setup/index.html",
-			"member/index.html",
-			"staff/index.html",
-			"stock/inlog.html",
-			"stock/incheck.html",
-			"sale/inventory.html",
-			"stock/return-log.html",
-			"sale/report.html",
-			"sale/index.html",
-			"stock/back-log.html",
-			"sale/day.html",
-			"sale/barcode.html",
-			"sale/return-order.html"
-		]
-	},
-	"setup/index.html": {
-		"refer": [
-			"setup/server.html",
-			"setup/editpwd.html",
-			"setup/message.html"
-		]
-	},
-	"staff/index.html": {
-		"refer": [
-			"staff/add.html"
-		]
-	},
-	"stock/inlog.html": {
-		"refer": [
-			"stock/inlog-detail.html"
-		]
-	},
-	"stock/incheck.html": {
-		"refer": [
-			"stock/inlog-detail.html",
-			"stock/incheck-confirm.html"
-		]
-	},
-	"sale/barcode.html": {
-		"refer": [
-			"sale/barcode-input.html",
-			"sale/goods.html",
-			"sale/goods-back.html",
-			"sale/goods-canci.html",
-			"sale/goods-return.html",
-			"sale/goods-incheck.html"
-		]
-	},
-	"sale/goods.html": {
-		"refer": [
-			"sale/print.html"
-		]
-	},
-	"stock/incheck-confirm.html": {
-		"refer": [
-			"sale/barcode.html"
-		]
-	},
-	"stock/back-log.html": {
-		"refer": [
-			"sale/barcode.html"
-		]
-	},
-	"sale/return-order.html": {
-		"refer": [
-			"sale/barcode.html"
-		]
-	},
-	"stock/return-log.html": {
-		"refer": [
-			"sale/return-order.html"
-		]
-	}
+  "index.html": {
+    "refer": [
+      "login.html",
+      "setup/index.html",
+      "member/index.html",
+      "staff/index.html",
+      "stock/inlog.html",
+      "stock/incheck.html",
+      "sale/inventory.html",
+      "stock/return-log.html",
+      "sale/report.html",
+      "sale/index.html",
+      "stock/back-log.html",
+      "sale/day.html",
+      "sale/barcode.html",
+      "sale/return-order.html"
+    ]
+  },
+  "setup/index.html": {
+    "refer": [
+      "setup/server.html",
+      "setup/editpwd.html",
+      "setup/message.html"
+    ]
+  },
+  "staff/index.html": {
+    "refer": [
+      "staff/add.html"
+    ]
+  },
+  "stock/inlog.html": {
+    "refer": [
+      "stock/inlog-detail.html"
+    ]
+  },
+  "stock/incheck.html": {
+    "refer": [
+      "stock/inlog-detail.html",
+      "stock/incheck-confirm.html"
+    ]
+  },
+  "sale/barcode.html": {
+    "refer": [
+      "sale/barcode-input.html",
+      "sale/goods.html",
+      "sale/goods-back.html",
+      "sale/goods-canci.html",
+      "sale/goods-return.html",
+      "sale/goods-incheck.html"
+    ]
+  },
+  "sale/goods.html": {
+    "refer": [
+      "sale/print.html"
+    ]
+  },
+  "stock/incheck-confirm.html": {
+    "refer": [
+      "sale/barcode.html"
+    ]
+  },
+  "stock/back-log.html": {
+    "refer": [
+      "sale/barcode.html"
+    ]
+  },
+  "sale/return-order.html": {
+    "refer": [
+      "sale/barcode.html"
+    ]
+  },
+  "stock/return-log.html": {
+    "refer": [
+      "sale/return-order.html"
+    ]
+  }
 }

@@ -209,6 +209,11 @@ font-size: 13px; text-align: center;; line-height: 35px; position: absolute; rig
 
 .fyt-swiper-wrapper{ height: calc(100% - 44px);}
 .fyt-cus-swiper .fyt-slide{width:125px; position: absolute; right: 0px; top: 0px; z-index: 100;}
+
+/* 测试下拉刷新 
+.fyt-scroll{ height: 100%; top: 45px;}
+.fyt-scroll #page{top: 0px;}*/
+
 #top {
 	position:absolute;
 	top:0;
