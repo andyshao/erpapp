@@ -9,24 +9,13 @@
 	</head>
 	<body class="mui-body">
 		<div id="app">
-			<div class="mui-card" @click="detail">
+			<div class="mui-card" v-for="it in list" v-cloak @click="detail(it)">
 				<div class="mui-card-content">
 					<div class="mui-card-content-inner">
-						这里面是名称名称
+						{{it.packName}}
 						<div class="log-footer">
-							<span>10</span>件
-							<span class="time">2018-07-01</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="mui-card" @click="detail">
-				<div class="mui-card-content">
-					<div class="mui-card-content-inner">
-						这里面是名称名称
-						<div class="log-footer">
-							<span>10</span>件
-							<span class="time">2018-07-01</span>
+							<span>{{it.goodsSum}}</span>件
+							<span class="time">{{it.addDate}}</span>
 						</div>
 					</div>
 				</div>
@@ -37,17 +26,60 @@
 		<script src="../themes/js/app.js"></script>
 		<script>
 			mui.init();
-			var vm = new Vue({
+			mui.plusReady(function() {	
+				os.init();	
+				plusReady();
+			});	
+			var _self,vm = new Vue({
 				el: "#app",
 				data:{
-					
+					list:[],
+					isTop:true,
+					parm:{
+						guid:'',
+						types:2,
+						page:1
+					}
 				},
 				methods:{
-					detail:function(){
+					detail:function(m){
+						SetSession('$inlogModel',m);
 						goWin('inlogdetail','inlog-detail.html','进货日志详情');
 					}
 				}
 			});
+			var userModel = GetSession('$LoginUser'),os={
+				init:function(){
+					natiopen=plus.nativeUI.showWaiting("正在加载中...", {modal:true});
+					vm.parm.guid=userModel.shopGuid;
+					baseAjax('app/api/stock/outpack',vm.parm,function(res){
+						natiopen.close();
+						if(res.statusCode==200){
+							if(vm.isTop){
+								vm.list=res.data;
+								_self.endPullToRefresh();
+							}
+							
+						}else{
+							mui.toast(res.message);
+						}
+					})
+				}
+			}
+			function plusReady() {
+				_self = plus.webview.currentWebview();
+				_self.setPullToRefresh({
+					support: true,
+					height: '50px',
+					range: '150px',
+					style: 'circle',
+					offset: '1px'
+				}, pulldownRefresh);
+			}
+
+			function pulldownRefresh() {
+				os.init();
+			}
 		</script>
 	</body>
 </html>

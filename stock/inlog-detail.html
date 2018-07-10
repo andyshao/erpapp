@@ -12,20 +12,16 @@
 			<div class="mui-card">
 				<div class="mui-card-content">
 					<div class="mui-card-content-inner">
-						这里面是名称名称
+						{{model.packName}}
 						<div class="log-footer">
-							<span>10</span>件
-							<span class="time">2018-07-01</span>
+							<span>{{model.goodsSum}}</span>件
+							<span class="time">{{model.addDate}}</span>
 						</div>
 					</div>
 				</div>
 			</div>
 			 <ul class="mui-table-view inlog">
-			 	<li class="mui-table-view-cell">武汉2017款秋装 <span class="mui-badge mui-badge-danger">14件</span></li>
-			 	<li class="mui-table-view-cell">武汉2017款秋装 <span class="mui-badge mui-badge-danger">14件</span></li>
-			 	<li class="mui-table-view-cell">武汉2017款秋装 <span class="mui-badge mui-badge-danger">14件</span></li>
-			 	<li class="mui-table-view-cell">武汉2017款秋装 <span class="mui-badge mui-badge-danger">14件</span></li>
-			 	<li class="mui-table-view-cell">武汉2017款秋装 <span class="mui-badge mui-badge-danger">14件</span></li>
+			 	<li class="mui-table-view-cell" v-for="it in list" v-cloak>{{it.brankName+it.styleName}} <span class="mui-badge mui-badge-danger">{{it.stockSum}}件</span></li>
 			 </ul>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
@@ -36,7 +32,20 @@
 			var vm = new Vue({
 				el: "#app",
 				data:{
-					
+					list:[],
+					model:{}
+				},
+				created: function () {	
+					var model=GetSession('$inlogModel');
+					this.model=model;
+					var that=this;
+					baseAjax('app/api/stock/outpack/list',{PackGuid:that.model.guid},function(res){
+						if(res.statusCode==200){
+							that.list=res.data;
+						}else{
+							mui.toast(res.message);
+						}
+					})
 				},
 				methods:{
 					add:function(){

@@ -13,7 +13,7 @@
 		<div id="app">
 			<div class="in_header">
 				<div class="in_top">
-					<p id="shopnames">--的店铺</p><span><i class="fa fa-envelope-o"></i></span>
+					<p id="shopnames">{{model.shopName}}</p><span><i class="fa fa-envelope-o"></i></span>
 				</div>
 				<div class="in_sys" @click="goScanCode(0)">
 					<img src="themes/img/icon/1_03.png">
@@ -109,9 +109,9 @@
 		<script src="themes/js/app.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-			mui.plusReady(function() {
-				plus.navigator.closeSplashscreen();
-				var userModel = GetSession('$userData');
+			var userModel;
+			mui.plusReady(function() {				
+				userModel = GetSession('$LoginUser');
 				if(userModel == null) {
 					mui.openWindow({ 
 						url: 'login.html',
@@ -125,12 +125,23 @@
 					});
 				} else {
 					plus.navigator.closeSplashscreen();
+					os.init();
 				}
+				window.addEventListener('loginSuccess',function(event){
+				   os.init();
+				})
 			});
+			var os={
+				init:function(){
+					userModel = GetSession('$LoginUser');
+					if(userModel==null)return;
+					vm.model=userModel;
+				}
+			};
 			var vm = new Vue({
 				el: "#app",
 				data:{
-					
+					model:{}
 				},
 				methods:{
 					goPage:function(title,id,url){

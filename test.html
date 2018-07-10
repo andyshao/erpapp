@@ -34,7 +34,7 @@
 				methods:{
 					logins:function(){
 						var that=this;
-						console.log('111');
+						log(that.model);
 						/*axios.post('http://192.168.13.146:4909/app/api/user/login', JSON.stringify(that.model))
 						  .then(function (response) {
 						    console.log(response);
@@ -43,13 +43,13 @@
 						    console.log(error);
 						  });*/
 						$.ajax({
-							url:'http://erp.feiyit.com/app/api/user/login',
+							url:'http://192.168.13.146:88/app/api/user/login',
 							type:'post',
 							data:that.model,
 							dataType: 'json', //服务器返回json格式数据
 							timeout: 10000, //超时时间设置为10秒；
 							success:function(res){
-								console.log(res);
+								log(res);
 							},
 							error:function(xhr, type, errorThrown){
 								log(xhr+'----'+type+'-----'+errorThrown);

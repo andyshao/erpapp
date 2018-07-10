@@ -15,23 +15,23 @@
 			<ul class="editpwd staff">
 				<li>
 					<p>姓名</p>
-					<input type="text" placeholder="请输入姓名" />
+					<input type="text" v-model="model.TrueName" placeholder="请输入姓名" />
 				</li>				
 				<li>
 					<p>性别</p>
-					<input type="text" id="sex" placeholder="请选择性别" />
+					<input type="text" id="sex" v-model="model.Sex" placeholder="请选择性别" />
 				</li>
 				<li>
 					<p>手机号码</p>
-					<input type="number" placeholder="请输入手机号码" />
+					<input type="number" v-model="model.Mobile" placeholder="请输入手机号码" />
 				</li>
 				<li class="mui-input-row mui-password">
 					<p>登录密码</p>
-					<input type="password" class="mui-input-password" placeholder="请输入登录密码" />
+					<input type="password" v-model="model.LoginPwd" class="mui-input-password" placeholder="请输入登录密码" />
 				</li>
 			</ul>
 			<div class="logout">
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">提交</button>
+				<button type="button" class="mui-btn mui-btn-danger mui-btn-block" @click="submit">提交</button>
 			</div>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
@@ -39,14 +39,63 @@
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
-			mui.init();
-			var vm = new Vue({
+			var userModel = GetSession('$LoginUser'),vm = new Vue({
 				el: "#app",
 				data: {
-
+					model:{
+						Guid:'',
+						LoginName:"",
+						LoginPwd:"",
+						TrueName:"",
+						Mobile:"",
+						Sex:""
+					}
+				},
+				created: function () {
+					var model=GetSession('$staffModel');
+					if(model==null){
+						this.model.ShopGuid=userModel.shopGuid;
+						this.model.LoginPwd='123456';
+						return;
+					}					
+					this.model.Guid=model.guid;
+					this.model.TrueName=model.trueName;
+					this.model.Mobile=model.mobile;
+					this.model.Sex=model.sex;
 				},
 				methods: {
-
+					submit:function(){
+						if(this.model.TrueName==''){
+							mui.toast('请输入姓名！');return;
+						}
+						if(this.model.Sex==''){
+							mui.toast('请选择性别！');return;
+						}
+						if(this.model.Mobile==''){
+							mui.toast('请输入手机号码！');return;
+						}
+						if(this.model.LoginPwd==''){
+							mui.toast('请输入密码！');return;
+						}
+						this.model.LoginName=this.model.Mobile;
+						var urls='app/api/user/staffedit',model=GetSession('$staffModel');
+						if(model==null){urls='app/api/user/staffadd';}
+						baseAjax(urls,this.model,function(res){
+							if(res.statusCode==200){
+								//释放缓存
+								SessionRemove('$staffModel');
+								mui.toast('修改成功');
+								//调用会员主页方法
+								var wsIndex=plus.webview.getWebviewById('staffindex');
+								mui.fire(wsIndex,'refresh');
+								//关闭当前页
+								var ws=plus.webview.currentWebview();
+								ws.close();
+							}else{
+								mui.toast(res.message);
+							}
+						})
+					}
 				}
 			});
 			(function($, doc) {
@@ -66,6 +115,7 @@
 					showUserPickerButton.addEventListener('tap', function(event) {
 						userPicker.show(function(items) {
 							userResult.value = items[0].value;
+							vm.model.Sex= items[0].value;
 						});
 					}, false);
 				});				

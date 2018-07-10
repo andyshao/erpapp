@@ -120,8 +120,7 @@ function log(data) {
 	console.log(JSON.stringify(data));
 }
 
-var httpUrl = "http://192.168.13.146:4909/";
-var timeouts = 20000; //超时请求时间为10秒
+var httpUrl = "http://erp.feiyit.com/",natiopen=null,timeouts = 20000; //超时请求时间为10秒
 (function(w) {
 	//公共ajax方法
 	w.baseAjax = function(url, options, callFun) {
@@ -137,7 +136,6 @@ var timeouts = 20000; //超时请求时间为10秒
 				callFun(data);
 			},
 			error: function(xhr, type, errorThrown) {
-				console.log(type);
 				if(type == 'timeout') {
 					mui.toast('连接超时，请稍后重试！');
 				} else if(type == 'error') {

@@ -15,27 +15,27 @@
 			<ul class="editpwd">
 				<li>
 					<p>手机号码</p>
-					<input type="number" placeholder="请输入手机号码" />
+					<input type="number" v-model="model.mobile" placeholder="请输入手机号码" />
 				</li>
 				<li>
 					<p>姓名</p>
-					<input type="text" placeholder="请输入姓名" />
+					<input type="text" v-model="model.userName" placeholder="请输入姓名" />
 				</li>
 				<li>
 					<p>性别</p>
-					<input type="text" id="sex" placeholder="请选择性别" />
+					<input type="text" id="sex" v-model="model.sex" placeholder="请选择性别" />
 				</li>
 				<li>
 					<p>生日</p>
-					<input type="text" id="birthday" placeholder="请选择生日" data-options='{"type":"date","beginYear":1900,"endYear":2018}' />
+					<input type="text" id="birthday" v-model="model.birthday" placeholder="请选择生日" data-options='{"type":"date","beginYear":1900,"endYear":2018}' />
 				</li>
 				<li>
 					<p>积分值</p>
-					<input type="text" readonly="readonly" placeholder="" value="0" />
+					<input type="text" readonly="readonly" v-model="model.points" placeholder="" />
 				</li>
 			</ul>
 			<div class="logout">
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">提交</button>
+				<button type="button" class="mui-btn mui-btn-danger mui-btn-block" @click="submit">提交</button>
 			</div>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
@@ -44,13 +44,49 @@
 		<script src="../themes/js/app.js"></script>
 		<script>
 			mui.init();
-			var vm = new Vue({
+			var userModel = GetSession('$LoginUser'),vm = new Vue({
 				el: "#app",
 				data: {
-
+					model:{}
+				},
+				created: function () {
+					var model=GetSession('$memberModel');
+					if(model==null){
+						this.model.ShopGuid=userModel.shopGuid;
+						this.model.LoginPwd='123456';
+						return;
+					}					
+					this.model=model;
 				},
 				methods: {
-
+					submit:function(){
+						if(!this.model.userName){
+							mui.toast('请输入姓名！');return;
+						}
+						if(!this.model.sex){
+							mui.toast('请选择性别！');return;
+						}
+						if(!this.model.mobile){
+							mui.toast('请输入手机号码！');return;
+						}
+						var urls='app/api/user/useredit',model=GetSession('$memberModel');
+						if(model==null){urls='app/api/user/useradd';}
+						baseAjax(urls,this.model,function(res){
+							if(res.statusCode==200){
+								//释放缓存
+								SessionRemove('$memberModel');
+								mui.toast('修改成功');
+								//调用会员主页方法
+								var wsIndex=plus.webview.getWebviewById('memindex');
+								mui.fire(wsIndex,'refresh');
+								//关闭当前页
+								var ws=plus.webview.currentWebview();
+								ws.close();
+							}else{
+								mui.toast(res.message);
+							}
+						})
+					}
 				}
 			});
 			(function($, doc) {
@@ -70,6 +106,7 @@
 					showUserPickerButton.addEventListener('tap', function(event) {
 						userPicker.show(function(items) {
 							userResult.value = items[0].value;
+							vm.model.sex=items[0].value;
 						});
 					}, false);
 				});
@@ -79,6 +116,7 @@
 					var picker = new $.DtPicker(options);
 					picker.show(function(rs) {
 						doc.getElementById('birthday').value=rs.text;
+						vm.model.birthday=rs.text;
 						picker.dispose();
 					});
 				}, false);

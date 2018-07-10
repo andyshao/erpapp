@@ -11,31 +11,20 @@
 		<div id="app">
 			<div class="mem_search">
 				<div class="mui-input-row">
-					<form id="frmSearch" action="">
-					<input type="search" id="keys" class="mui-input-clear" placeholder="请输入号码或姓名搜索">
+					<form @submit.prevent="search">
+						<input type="search" v-model="parm.key" placeholder="请输入号码或姓名搜索">
 					</form>
 				</div>
 			</div>
 			<ul class="mui-table-view">
-				<li class="mui-table-view-cell mui-media meblist" @click="modify">
+				<li class="mui-table-view-cell mui-media meblist" v-for="it in list" v-cloak @click="modify(it)">
 					<a href="javascript:;">
 						<div class="mui-media-object mui-pull-right">
-							<span class="mui-badge mui-badge-danger">100积分</span>							
+							<span class="mui-badge mui-badge-danger">{{it.points}}积分</span>							
 						</div>
 						<div class="mui-media-body">
-							姓名：张三
-							<p class='mui-ellipsis'>13888888888</p>
-						</div>
-					</a>
-				</li>
-				<li class="mui-table-view-cell mui-media meblist" @click="modify">
-					<a href="javascript:;">
-						<div class="mui-media-object mui-pull-right">
-							<span class="mui-badge mui-badge-danger">100积分</span>							
-						</div>
-						<div class="mui-media-body">
-							姓名：张三
-							<p class='mui-ellipsis'>13888888888</p>
+							姓名：{{it.userName}}
+							<p class='mui-ellipsis'>{{it.mobile}}</p>
 						</div>
 					</a>
 				</li>
@@ -46,21 +35,50 @@
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
-			mui.init();
+			mui.init();	
+			mui.plusReady(function() {	
+				os.init();
+				window.addEventListener('refresh',function(event){
+				   os.init();
+				})
+			});			
 			var vm = new Vue({
 				el: "#app",
 				data:{
-					
+					list:[],
+					parm:{
+						key:'',
+						page:1
+					}
 				},
 				methods:{
 					add:function(){
+						SetSession('$memberModel',null);
 						goWin('memadd','add.html','添加会员');
 					},
-					modify:function(){
+					modify:function(m){
+						SetSession('$memberModel',m);
 						goWin('memadd','add.html','编辑会员');
+					},
+					search:function(){
+						os.init();
 					}
 				}
 			});
+			var userModel = GetSession('$LoginUser'),os={
+				init:function(){
+					natiopen=plus.nativeUI.showWaiting("正在加载中...", {modal:true});
+					vm.parm.guid=userModel.shopGuid;
+					baseAjax('app/api/user/userlist',vm.parm,function(res){
+						natiopen.close();
+						if(res.statusCode==200){
+							vm.list=res.data;
+						}else{
+							mui.toast(res.message);
+						}
+					})
+				}
+			}
 		</script>
 	</body>
 </html>

@@ -12,19 +12,19 @@
 			<ul class="editpwd">
 				<li>
 					<p>原密码</p>
-					<input type="password" placeholder="请输入原密码" id="oldPwd"/>
+					<input type="password" v-model="model.HistoryPwd" placeholder="请输入原密码" id="oldPwd"/>
 				</li>
 				<li>
 					<p>新密码</p>
-					<input type="password" placeholder="请输入新密码" id="newPwd"/>
+					<input type="password" v-model="model.NewPwd" placeholder="请输入新密码" id="newPwd"/>
 				</li>
 				<li>
 					<p>确认新密码</p>
-					<input type="password" placeholder="请再次输入新密码" id="reNewPwd"/>
+					<input type="password" v-model="model.okNewPwd" placeholder="请再次输入新密码" id="reNewPwd"/>
 				</li>				
 			</ul>
 			<div class="logout">
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">提交</button>
+				<button type="button" class="mui-btn mui-btn-danger mui-btn-block" @click="submit">提交</button>
 			</div>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
@@ -35,10 +35,38 @@
 			var vm = new Vue({
 				el: "#app",
 				data:{
-					
+					model:{
+						Guid:'',
+						HistoryPwd:'',
+						NewPwd:'',
+						okNewPwd:''
+					}
 				},
 				methods:{
-					
+					submit:function(){
+						if(this.model.HistoryPwd==''){
+							mui.toast('原密码不能为空！');return;
+						}
+						if(this.model.NewPwd==''){
+							mui.toast('新密码不能为空！');return;
+						}
+						if(this.model.okNewPwd!=this.model.NewPwd){
+							mui.toast('两次密码输入的不一致！');return;
+						}
+						var userModel = GetSession('$LoginUser');
+						this.model.Guid=userModel.staffGuid;
+						natiopen=plus.nativeUI.showWaiting("正在提交，请等待...", {modal:true});
+						baseAjax('app/api/user/editpwd',this.model,function(res){
+							natiopen.close();
+							if(res.statusCode==200){
+								mui.toast('密码修改成功！');
+								var ws=plus.webview.currentWebview();
+								ws.close();
+							}else{
+								mui.toast(res.message);
+							}
+						})
+					}
 				}
 			});
 		</script>

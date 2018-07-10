@@ -42,7 +42,7 @@
 				</li>
 			</ul>			
 			<div class="logout">
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block">退出登录</button>
+				<button type="button" class="mui-btn mui-btn-danger mui-btn-block" @click="signOut">退出登录</button>
 			</div>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
@@ -64,6 +64,10 @@
 					},
 					goPage:function(title,id,url){
 						goWin(id,url,title);
+					},
+					signOut:function(){
+						SessionRemove('$LoginUser');
+						plus.runtime.restart();
 					}
 				}
 			});

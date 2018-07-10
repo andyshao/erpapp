@@ -39,7 +39,6 @@
 					return;
 				};
 			});
-			var natiopen;
 			var vm = new Vue({
 				el: "#app",
 				data:{
@@ -67,38 +66,20 @@
 			            this.model.deviceName=plus.device.vendor;
 			            log(this.model);			            
 						natiopen=plus.nativeUI.showWaiting("登录中，请等待...", {modal:true});
-						var that=this;
-						console.log(httpUrl + 'app/api/user/login');
-						mui.ajax(httpUrl + 'app/api/user/login', {
-							data: that.model,
-							async: true,
-							dataType: 'json', //服务器返回json格式数据
-							type: 'post', //HTTP请求类型
-							timeout: 10000, //超时时间设置为10秒；
-							success: function(data) {
-								log(data);
-								//callFun(data);
-							},
-							error: function(xhr, type, errorThrown) {
-								console.log(type);
-								if(type == 'timeout') {
-									mui.toast('连接超时，请稍后重试！');
-								} else if(type == 'error') {
-									mui.toast('连接异常，请稍后重试！');
-								}
-							}
-						});
-						/*baseAjax('app/api/user/login',this.model,function(res){
-							log(res);
+						baseAjax('app/api/user/login',this.model,function(res){
 							natiopen.close();
 							if(res.statusCode==200){
-								SetSession('$LoginUser',res.data);
+								SetSession('$LoginUser',res.data);		
+								//调用主页方法
+								var wsIndex=plus.webview.getLaunchWebview();
+								mui.fire(wsIndex,'loginSuccess');
+								//关闭登录页
 								var ws=plus.webview.currentWebview();
 								ws.close();
 							}else{
 								mui.toast(res.message);
 							}
-						});*/						
+						});						
 					}
 				}
 			});
