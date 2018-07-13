@@ -72,7 +72,8 @@
 	},
 	"stock/return-log.html": {
 		"refer": [
-			"sale/return-order.html"
+			"sale/return-order.html",
+			"stock/return-log-detail.html"
 		]
 	},
 	"member/index.html": {

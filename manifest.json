@@ -222,7 +222,8 @@
 			"stock/return-log.html": {
 				"resources": [],
 				"refer": [
-					"sale/return-order.html"
+					"sale/return-order.html",
+					"stock/return-log-detail.html"
 				],
 				"priority": 0
 			},

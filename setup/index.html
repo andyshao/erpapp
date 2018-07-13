@@ -38,7 +38,7 @@
 					<a href="javascript:void(0)" class="mui-navigate-right">清除缓存</a>
 				</li>
 				<li class="mui-table-view-cell" @click="version">
-					<a href="javascript:void(0)">版本更新 <i class="mui-pull-right update">V1.0.0</i></a>
+					<a href="javascript:void(0)">版本更新 <i class="mui-pull-right update">V{{version}}</i></a>
 				</li>
 			</ul>			
 			<div class="logout">
@@ -50,10 +50,10 @@
 		<script src="../themes/js/app.js"></script>
 		<script>
 			mui.init();
-			var vm = new Vue({
+			var os, vm = new Vue({
 				el: "#app",
 				data:{
-					
+					version:''
 				},
 				methods:{
 					version:function(){
@@ -71,6 +71,20 @@
 					}
 				}
 			});
+			mui.plusReady(function() {
+				os.init();
+			});
+			os={
+				init:function(){
+					baseAjax('app/api/user/version',null,function(res){
+						if(res.statusCode == 200) {		
+							vm.version=res.data[0].androidVersion;
+						}else{
+							mui.toast(res.msg);
+						}
+					})
+				}
+			}
 		</script>
 	</body>
 </html>

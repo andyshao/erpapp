@@ -20,25 +20,23 @@
 					</div>
 				</div>
 			</div>
+			<div class="no-data">{{loadfoot}}</div>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
-			mui.init();
-			mui.plusReady(function() {	
-				os.init();	
-				plusReady();
-			});	
+			mui.init();			
 			var _self,vm = new Vue({
 				el: "#app",
 				data:{
 					list:[],
-					isTop:true,
+					loadfoot:'',
 					parm:{
 						guid:'',
 						types:2,
-						page:1
+						page:1,
+						total:1
 					}
 				},
 				methods:{
@@ -48,6 +46,19 @@
 					}
 				}
 			});
+			mui.plusReady(function() {	
+				os.init();	
+				plusReady();
+				window.onscroll = function() {　　
+					if(getScrollTop() + getWindowHeight() == getScrollHeight()) {
+						if(vm.parm.page == vm.parm.total) {
+							return;
+						}　　　　
+						vm.parm.page = vm.parm.page + 1;						
+						os.init();　　
+					}
+				};
+			});	
 			var userModel = GetSession('$LoginUser'),os={
 				init:function(){
 					natiopen=plus.nativeUI.showWaiting("正在加载中...", {modal:true});
@@ -55,14 +66,25 @@
 					baseAjax('app/api/stock/outpack',vm.parm,function(res){
 						natiopen.close();
 						if(res.statusCode==200){
-							if(vm.isTop){
-								vm.list=res.data;
-								_self.endPullToRefresh();
+							if(vm.parm.page == 1) {
+								vm.list = res.data;
+								if(vm.parm.total==1 && res.data.length<6 || res.data==null){
+									vm.loadfoot='';
+								}else{
+									vm.loadfoot='正在加载数据~';
+								}								
+							} else {	
+								$.each(res.data, function (i,item) {
+									vm.list.push(item);
+								}); 
+								if(vm.parm.page >= vm.parm.total) {
+									vm.loadfoot='没有数据了~';
+								}
 							}
-							
 						}else{
 							mui.toast(res.message);
 						}
+						_self.endPullToRefresh();
 					})
 				}
 			}

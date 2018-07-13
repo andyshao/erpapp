@@ -12,15 +12,15 @@
 			<div class="good-wall">
 				<div class="good_code">
 					<div id="bcTarget"><img src="../themes/img/code.png" /></div>
-					<p>ASDF6645645-6645</p>
+					<p>{{code}}</p>
 				</div>
 				<div class="good-info">
 					<h4>无此商品</h4>
-					<p>款式：--　　尺码：--　　</p>
-					<p><span>商品单价</span><strong>￥50元</strong></p>
-					<p><span>收款商家</span><strong>测试商家</strong></p>
+					<p>品牌：{{model.brankName}}　　款式：{{model.styleName}}　　</p>
+					<p><span>商品单价</span><strong>￥{{model.disPrice}}元</strong></p>
+					<p><span>收款商家</span><strong>{{model.shopName}}</strong></p>
 					<p><span>账单编号</span><strong>64564645645645</strong></p>
-					<p><span>下单时间</span><strong class="red">2018-07-01</strong></p>
+					<p><span>下单时间</span><strong class="red">{{model.time}}</strong></p>
 					<p><span>折扣方式</span><strong>--</strong></p>
 				</div>
 				<div class="det_item mui-clearfix"><span>是否会员</span>
@@ -45,10 +45,15 @@
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
-			var vm = new Vue({
+			mui.init({
+				swipeBack:true
+			});
+			var userModel = GetSession('$LoginUser'),os,vm = new Vue({
 				el: "#app",
 				data: {
-					
+					code:'',
+					model:{},
+					activity:{}
 				},
 				methods: {
 					goPrint:function(){
@@ -56,9 +61,26 @@
 					}
 				}
 			});	
-			mui.init({
-				swipeBack:true
+			mui.plusReady(function() {
+				os.init();
 			});
+			os={
+				init:function(){
+					var barcode=GetSession('$barcode');
+					vm.code=barcode.code;
+					vm.model=userModel.shopName;
+					vm.model=new Date();
+					baseAjax('app/api/goods/bycode',{shopGuid:userModel.shopGuid,code:barcode.code},function(res){
+						if(res.statusCode==200){
+							log(res);
+							vm.model=res.good;
+							vm.activity=res.activity;
+						}else{
+							mui.toast('服务器错误');
+						}
+					})
+				}
+			}
 			mui('.det_item .mui-switch').each(function() {				
 				this.addEventListener('toggle', function(event) {
 					if(event.detail.isActive){

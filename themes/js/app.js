@@ -120,7 +120,9 @@ function log(data) {
 	console.log(JSON.stringify(data));
 }
 
-var httpUrl = "http://erp.feiyit.com/",natiopen=null,timeouts = 20000; //超时请求时间为10秒
+var httpUrl = "http://erp.feiyit.com/",natiopen=null,
+nodata='没有数据了',
+timeouts = 20000; //超时请求时间为10秒
 (function(w) {
 	//公共ajax方法
 	w.baseAjax = function(url, options, callFun) {
@@ -191,4 +193,96 @@ var rightClose = function(parview) {
 			mui.back();
 		}
 	});
+}
+
+
+function getDateDiff(dateStr) {
+	var timestamp = Date.parse(dateStr);
+  var publishTime = timestamp / 1000,
+    d_seconds,
+    d_minutes,
+    d_hours,
+    d_days,
+    timeNow = parseInt(new Date().getTime() / 1000),
+    d,
+ 
+    date = new Date(publishTime * 1000),
+    Y = date.getFullYear(),
+    M = date.getMonth() + 1,
+    D = date.getDate(),
+    H = date.getHours(),
+    m = date.getMinutes(),
+    s = date.getSeconds();
+  //小于10的在前面补0
+  if (M < 10) {
+    M = '0' + M;
+  }
+  if (D < 10) {
+    D = '0' + D;
+  }
+  if (H < 10) {
+    H = '0' + H;
+  }
+  if (m < 10) {
+    m = '0' + m;
+  }
+  if (s < 10) {
+    s = '0' + s;
+  }
+ 
+  d = timeNow - publishTime;
+  d_days = parseInt(d / 86400);
+  d_hours = parseInt(d / 3600);
+  d_minutes = parseInt(d / 60);
+  d_seconds = parseInt(d);
+ 
+  if (d_days > 0 && d_days < 3) {
+    return d_days + '天前';
+  } else if (d_days <= 0 && d_hours > 0) {
+    return d_hours + '小时前';
+  } else if (d_hours <= 0 && d_minutes > 0) {
+    return d_minutes + '分钟前';
+  } else if (d_seconds < 60) {
+    if (d_seconds <= 0) {
+      return '刚刚';
+    } else {
+      return d_seconds + '秒前';
+    }
+  } else if (d_days >= 3 && d_days < 30) {
+    return M + '-' + D + ' ' + H + ':' + m;
+  } else if (d_days >= 30) {
+    return Y + '-' + M + '-' + D + ' ' + H + ':' + m;
+  }
+}
+
+function getScrollTop(){
+　　var scrollTop = 0, bodyScrollTop = 0, documentScrollTop = 0;
+　　if(document.body){
+　　　　bodyScrollTop = document.body.scrollTop;
+　　}
+　　if(document.documentElement){
+　　　　documentScrollTop = document.documentElement.scrollTop;
+　　}
+　　scrollTop = (bodyScrollTop - documentScrollTop > 0) ? bodyScrollTop : documentScrollTop;
+　　return scrollTop;
+}
+function getScrollHeight(){
+　　var scrollHeight = 0, bodyScrollHeight = 0, documentScrollHeight = 0;
+　　if(document.body){
+　　　　bodyScrollHeight = document.body.scrollHeight;
+　　}
+　　if(document.documentElement){
+　　　　documentScrollHeight = document.documentElement.scrollHeight;
+　　}
+　　scrollHeight = (bodyScrollHeight - documentScrollHeight > 0) ? bodyScrollHeight : documentScrollHeight;
+　　return scrollHeight;
+}
+function getWindowHeight(){
+　　var windowHeight = 0;
+　　if(document.compatMode == "CSS1Compat"){
+　　　　windowHeight = document.documentElement.clientHeight;
+　　}else{
+　　　　windowHeight = document.body.clientHeight;
+　　}
+　　return windowHeight;
 }
