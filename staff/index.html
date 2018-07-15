@@ -52,7 +52,7 @@
 					},
 					modify:function(m){
 						SetSession('$staffModel',m);
-						goWin('modifyadd','add.html','编辑店员');
+						goWin('staffadd','add.html','编辑店员');
 					},
 					search:function(){
 						this.parm.page=1;
@@ -62,6 +62,7 @@
 				}
 			});
 			mui.plusReady(function() {	
+				rightClose('staffindex');
 				os.init();
 				window.addEventListener('refresh',function(event){
 				   os.init();

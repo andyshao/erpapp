@@ -10,9 +10,9 @@
 	<body class="mui-body">
 		<div id="app">
 			<div class="print_wall">
-				<p id="p1">日期：2016-09-06</p>
-				<p id="p2">收款员：张三</p>
-				<p id="p3">订单号：20160905465466</p>
+				<p id="p1">日期：{{model.time}}</p>
+				<p id="p2">收款员：{{model.adminName}}</p>
+				<p id="p3">订单号：{{order.number}}</p>
 				<hr>
 				<p>订单详情：</p>
 				<table>
@@ -21,9 +21,9 @@
 						<th>金额</th>
 					</tr>
 					<tbody id="tsh">
-						<tr class="p10">
-							<td>aaaaaaaa</td>
-							<td>111</td>
+						<tr class="p10" v-for="it in order.list" v-cloak>
+							<td>{{it.goodName}}</td>
+							<td>{{it.goodMoney}}</td>
 						</tr>
 						<tr><td colspan="2"></td></tr>
 					</tbody>
@@ -33,17 +33,17 @@
 				<table>
 					<tr>
 						<td>数量</td>
-						<td id="p4">1</td>
+						<td id="p4">{{model.counts}}</td>
 					</tr>
 					<tr>
 						<td>付款总额</td>
-						<td id="p5">00.00</td>
+						<td id="p5">{{model.money}}</td>
 					</tr>
 				</table>
 			</div>
 			<div class="barcode-foot mui-clearfix">
-				<button type="button"  class="mui-btn mui-btn-danger">连接打印机</button>
-				<button type="button"  class="mui-btn mui-btn-danger">打印小票</button>
+				<button type="button" @click="connectPrint" class="mui-btn mui-btn-danger">连接打印机</button>
+				<button type="button" @click="prints" class="mui-btn mui-btn-danger">打印小票</button>
 			</div>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
@@ -51,19 +51,55 @@
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
-			var vm = new Vue({
+			var userModel = GetSession('$LoginUser'),vm = new Vue({
 				el: "#app",
 				data: {
-					
+					model:{},
+					list:[],
+					order:{}
+				},
+				created: function () {
+					var that=this;	
+					this.order=GetSession('$SaleOrder');
+					baseAjax('app/api/sale/bynumber',{number:this.order.number},function(res){
+						if(res.statusCode==200){
+							that.model=res.data;
+							that.model.time=getNowFormatDate();
+							that.model.adminName=userModel.adminName;
+						}else{
+							mui.toast(res.message);
+						}
+					});
 				},
 				methods: {
-					
+					prints:function(){
+						mui.toast('打印小票');
+					},
+					connectPrint:function(){
+						mui.toast('连接打印机');
+					}
 				}
 			});	
 			mui.init({
 				swipeBack:true
 			});
-			
+			//重写返回键
+			mui.back=function(){
+				var wsbar = plus.webview.getWebviewById('barcode');
+				if(wsbar!=null){
+					wsbar.close();
+				}	
+				var wsgood = plus.webview.getWebviewById('goods');
+				if(wsgood!=null){
+					wsgood.close();
+				}
+				var wsinput = plus.webview.getWebviewById('manualInput');
+				if(wsinput!=null){
+					wsinput.close();
+				}
+				var wc=plus.webview.currentWebview();
+    			wc.close();
+			}
 		</script>
 	</body>
 </html>

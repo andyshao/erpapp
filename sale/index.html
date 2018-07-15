@@ -45,122 +45,43 @@
 			<div class="swiper-container" id="page">
 				<div class="swiper-wrapper sale-wall">
 					<div class="swiper-slide slidepage">
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
+						<div class="sale-item" v-for="it in resA.list" v-cloak>
+							<div class="title">订单：{{it.number}}<span>￥{{it.realMoney}}</span></div>
+							<div class="sale-info" v-for="m in it.goods">
+								<h4>{{m.goodsName}}</h4>
+								<p>条形码：{{m.code}}</p>
+								<span>{{m.counts}}件</span>
 							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
-							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
-							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
-							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
-							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
-							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
-							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
-							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
-							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
+							<div class="footer"><span><i class="iconfont icon-riqi"></i>{{it.addDate}}</span></div>
+						</div>	
+						<div class="no-data">{{loadfoot}}</div>
 					</div>
 					<div class="swiper-slide slidepage">
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
+						<div class="sale-item" v-for="it in resB.list" v-cloak>
+							<div class="title">订单：{{it.number}}<span>￥{{it.realMoney}}</span></div>
+							<div class="sale-info" v-for="m in it.goods">
+								<h4>{{m.goodsName}}</h4>
+								<p>条形码：{{m.code}}</p>
+								<span>{{m.counts}}件</span>
 							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
-							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
+							<div class="footer"><span><i class="iconfont icon-riqi"></i>{{it.addDate}}</span></div>
+						</div>	
+						<div class="no-data">{{loadfoot}}</div>
 					</div>
 					<div class="swiper-slide slidepage">
-						<div class="sale-item">
-							<div class="title">订单：170205446654<span>￥160</span></div>
-							<div class="sale-info">
-								<h4>这是标题标题标题标题</h4>
-								<p>条形码：ADAFSA-5644-0140</p>
-								<span>5件</span>
+						<div class="sale-item" v-for="it in resC.list" v-cloak>
+							<div class="title">订单：{{it.number}}<span>￥{{it.realMoney}}</span></div>
+							<div class="sale-info" v-for="m in it.goods">
+								<h4>{{m.goodsName}}</h4>
+								<p>条形码：{{m.code}}</p>
+								<span>{{m.counts}}件</span>
 							</div>
-							<div class="footer"><span><i class="iconfont icon-riqi"></i>2017-07-02 10:25:45</span><button type="button" class="mui-btn mui-btn-success mui-btn-outlined">详情</button></div>
-						</div>
+							<div class="footer"><span><i class="iconfont icon-riqi"></i>{{it.addDate}}</span></div>
+						</div>	
+						<div class="no-data">{{loadfoot}}</div>
 					</div>
 				</div>
-			</div>
-			
+			</div>			
 			<div class="page-cover" @click="closeWhere"></div>
 			<div class="fyt-chwall">
 				<div class="mui-scroll">
@@ -168,12 +89,10 @@
 					<h5 class="sel_time"><i class="iconfont icon-riqi"></i><span @click="openDate(2)">{{whereParm.etime}}</span></h5>
 					<div class="cs-wall mui-clearfix">
 					</div>
-					<h5>品牌<span></span></h5>
+					<h5>销售类型<span></span></h5>
 					<div class="cd-wall">
-						<span @click="selBrank()" :class="{cur:true}">测试品牌</span>
-						<span @click="selBrank()" :class="{cur:false}">测试品牌</span>
-						<span @click="selBrank()" :class="{cur:false}">测试品牌</span>
-						<span @click="selBrank()" :class="{cur:false}">测试品牌</span>
+						<span @click="selBrank(1)" :class="{cur:parm.saleType==1}">正常商品销售</span>
+						<span @click="selBrank(2)" :class="{cur:parm.saleType==2}">残次品销售</span>
 					</div>
 				</div>
 				<div class="fyt-foot-button mui-clearfix">
@@ -188,10 +107,10 @@
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
-			var _self,isOpenWhere=false;
+			var _self,isOpenWhere=false,os;
 			mui.init();
 			mui.plusReady(function() {	
-				//plusReady();
+				os.init();
 				window.addEventListener('customEvent',function(event){
 					if(!isOpenWhere){
 						os.openWhere();
@@ -199,33 +118,40 @@
 						os.closeWhere();
 					}				   	
 				})
-			});
-			function plusReady() {
-				_self = plus.webview.currentWebview();
-				_self.setPullToRefresh({
-					support: true,
-					height: '50px',
-					range: '150px',
-					style: 'circle',
-					offset: '45px'
-				}, pulldownRefresh);
-			}
-
-			function pulldownRefresh() {				
-				setTimeout(function() {
-					_self.endPullToRefresh();
-				}, 500);
-			}
-			var vm = new Vue({
+			});			
+			var userModel = GetSession('$LoginUser'),vm = new Vue({
 				el: "#app",
 				data: {
+					resA:{
+						list:[],
+						page:1,
+						total:1
+					}, 
+					resB:{
+						list:[],
+						page:1,
+						total:1
+					},
+					resC:{
+						list:[],
+						page:1,
+						total:1
+					},
 					whereParm:{
 						btime:'请选择开始时间',
-						etime:'请选择结束时间',
-						blank:''
-					}
+						etime:'请选择结束时间'
+					},
+					parm:{
+						guid:'',
+						btime:'',
+						etime:'',
+						saleType:0,
+						activityTypes:0
+					},
+					loadfoot:'正在加载数据~'
 				},
 				created:function(){
+					this.parm.guid=userModel.shopGuid;
 					$(".cd-wall span").click(function() {
 						$(this).addClass("cur").siblings().removeClass('cur');
 					});
@@ -234,6 +160,16 @@
 					findWhere:function(){
 						//确定查询
 						os.closeWhere();
+						if(curIndex==0){
+							this.resA.page=1;
+						}
+						if(curIndex==1){
+							this.resB.page=1;
+						}
+						if(curIndex==2){
+							this.resC.page=1;
+						}
+						os.init();
 					},
 					wheres:function(){						
 						os.openWhere();
@@ -247,15 +183,81 @@
 					resetWhere:function(){
 						this.whereParm.btime='请选择开始时间';
 						this.whereParm.etime='请选择结束时间';
-						this.whereParm.blank='';
+						this.parm.btime='';
+						this.parm.etime='';
 					},
-					selBrank:function(){
-						
+					selBrank:function(m){
+						this.parm.saleType=m;
 					}
 				}
 			});
 
-			var os={
+			os={
+				init:function(){
+					app.loading();
+					vm.parm.activityTypes=curIndex+1;
+					baseAjax('app/api/sale/order/list',vm.parm,function(res){
+						app.loadClose();
+						if(res.statusCode==200){
+							if(curIndex==0){								
+								vm.resA.total = res.count;
+								if(vm.resA.page == 1) {		
+									vm.resA.list=res.data;
+									if(vm.resA.total==1 && res.data.length<6 || res.data.length==0){
+										vm.loadfoot='';
+									}else{
+										vm.loadfoot='正在加载数据~';
+									}								
+								} else {	
+									$.each(res.data, function (i,item) {
+										vm.resA.list.push(item);
+									}); 
+									if(vm.resA.page >= vm.resA.total) {
+										vm.loadfoot='没有数据了~';
+									}
+								}
+							}
+							if(curIndex==1){								
+								vm.resB.total = res.count;
+								if(vm.resB.page == 1) {		
+									vm.resB.list=res.data;
+									if(vm.resB.total==1 && res.data.length<6 || res.data.length==0){
+										vm.loadfoot='';
+									}else{
+										vm.loadfoot='正在加载数据~';
+									}								
+								} else {	
+									$.each(res.data, function (i,item) {
+										vm.resB.list.push(item);
+									}); 
+									if(vm.resB.page >= vm.resB.total) {
+										vm.loadfoot='没有数据了~';
+									}
+								}
+							}
+							if(curIndex==2){								
+								vm.resC.total = res.count;
+								if(vm.resC.page == 1) {		
+									vm.resC.list=res.data;
+									if(vm.resC.total==1 && res.data.length<6 || res.data.length==0){
+										vm.loadfoot='';
+									}else{
+										vm.loadfoot='正在加载数据~';
+									}								
+								} else {	
+									$.each(res.data, function (i,item) {
+										vm.resC.list.push(item);
+									}); 
+									if(vm.resC.page >= vm.resC.total) {
+										vm.loadfoot='没有数据了~';
+									}
+								}
+							}
+						}else{
+							mui.toast(res.msg);
+						}
+					})
+				},
 				closeWhere:function(){
 					$('.page-cover,.fyt-chwall').hide(600);
 					isOpenWhere=false;
@@ -274,9 +276,11 @@
 						var d = e.date;
 						if(objs==1){
 							vm.whereParm.btime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+							vm.parm.btime=vm.whereParm.btime;
 						}
 						if(objs==2){
 							vm.whereParm.etime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+							vm.parm.etime=vm.whereParm.etime;
 						}
 					}, function(e) {
 					}, {
@@ -294,7 +298,7 @@
 				slidesPerView: 3,
 				freeMode: true,
 				on: {
-					init: function() {
+					init: function() {						
 						navSlideWidth = this.slides.eq(0).css('width'); //导航字数需要统一,每个导航宽度一致
 						bar = this.$el.find('.bar')
 						bar.css('width', navSlideWidth)
@@ -334,6 +338,12 @@
 					},
 					transitionStart: function() {
 						curIndex = this.activeIndex;
+						if(curIndex==1){
+							if(vm.resB.list.length==0){os.init();}
+						}
+						if(curIndex==2){
+							if(vm.resC.list.length==0){os.init();}
+						}
 						activeSlidePosition = navSwiper.slides[curIndex].offsetLeft
 						//释放时导航粉色条移动过渡
 						bar.transition(tSpeed)

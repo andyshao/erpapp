@@ -80,5 +80,10 @@
 		"refer": [
 			"member/add.html"
 		]
+	},
+	"sale/goods-canci.html": {
+		"refer": [
+			"sale/print.html"
+		]
 	}
 }

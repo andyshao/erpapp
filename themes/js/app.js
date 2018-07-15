@@ -4,7 +4,7 @@ var goWin = function(id, urls, title) {
 		url: urls,
 		id: id,
 		styles: { // 窗口参数 参考5+规范中的WebviewStyle,也就是说WebviewStyle下的参数都可以在此设置
-			bounce: 'vertical',
+			bounce: 'vertical',			
 			titleNView: { // 窗口的标题栏控件
 				homeButton: false, //可取值： "true" - 显示Home按钮； "false" - 不显示Home按钮。 默认值为"false"。 Home按钮的颜色为窗口标题文字颜色，按下时颜色自动调整透明度为0.3。 点击Home按钮的逻辑为关闭所有非首页窗口，显示首页窗口。
 				autoBackButton: true,
@@ -24,7 +24,8 @@ var goWin = function(id, urls, title) {
 			}
 		},
 		show: {
-			event: "loaded"
+			event: "loaded",
+			aniShow:'pop-in',
 		},
 		waiting: {
 			autoShow: false
@@ -45,6 +46,7 @@ var goWinRbtn = function(id, urls, title,callFun,iconcode) {
 	mui.openWindow({
 		url: urls,
 		id: id,
+		bottomBorderColor: "#cccccc", //底部边线颜色
 		styles: { // 窗口参数 参考5+规范中的WebviewStyle,也就是说WebviewStyle下的参数都可以在此设置
 			bounce: 'vertical',
 			titleNView: { // 窗口的标题栏控件
@@ -76,7 +78,8 @@ var goWinRbtn = function(id, urls, title,callFun,iconcode) {
 			}
 		},
 		show: {
-			event: "loaded"
+			event: "loaded",
+			aniShow:'pop-in'
 		},
 		waiting: {
 			autoShow: false
@@ -148,32 +151,23 @@ timeouts = 20000; //超时请求时间为10秒
 	}
 })(window);
 
-var addTileIcon = function(style, iconBase64, callback, viewid) {
-	viewid || (viewid = plus.webview.currentWebview().id + "_title");
-
-	var titleView = plus.nativeObj.View.getViewById(viewid);
-	//console.log("viewid:" + viewid + "  " + titleView + " titleView")
-	if(titleView) {
-		(style.right != null) && (style.left = window.innerWidth - style.right);
-		delete style.right;
-		style.top || (style.top = "8px")
-		style.width || (style.width = "30px")
-		style.height || (style.height = "30px");
-		var bitmap = new plus.nativeObj.Bitmap("about");
-		bitmap.loadBase64Data(iconBase64);
-		titleView.drawBitmap(bitmap, {}, style);
-		titleView.interceptTouchEvent(true);
-		if(callback) {
-			titleView.addEventListener("click", function(e) {
-				var x = e.clientX;
-				if(x > style.left) { //触发关于页面
-					callback(titleView);
-				}
-			}, false);
-		}
+var app={
+	loading:function(msg){
+		$("body").append('<div class="loading-cover"></div><div class="load-container load"><div class="loader">Loading...</div></div>');	
+		$('body').bind('touchmove', function (event) {
+			if (event.cancelable) {
+		        // 判断默认行为是否已经被禁用
+		        if (!event.defaultPrevented) {
+		            event.preventDefault();
+		        }
+		    }
+		})
+	},
+	loadClose:function(){
+		$(".loading-cover,.load-container").remove();
+		$('body').unbind('touchmove');
 	}
-	return titleView;
-};
+}
 
 var rightClose = function(parview) {
 	//获得父窗口ID
@@ -285,4 +279,21 @@ function getWindowHeight(){
 　　　　windowHeight = document.body.clientHeight;
 　　}
 　　return windowHeight;
+}
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+    return currentdate;
 }

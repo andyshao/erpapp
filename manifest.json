@@ -233,6 +233,13 @@
 					"member/add.html"
 				],
 				"priority": 0
+			},
+			"sale/goods-canci.html": {
+				"resources": [],
+				"refer": [
+					"sale/print.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {

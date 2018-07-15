@@ -44,83 +44,37 @@
 				<div class="swiper-wrapper">
 					<div class="swiper-slide slidepage">
 						<ul class="mui-table-view inv-item">
-							<li class="mui-table-view-cell mui-media">
+							<li class="mui-table-view-cell mui-media" v-for="it in resA.list" v-cloak>
 								<a href="javascript:;">
 									<div class="mui-media-object mui-pull-right">
-										<span class="fh_status pd_bar"><tt></tt></span>
-										<p class="red">0/0</p>
+										<span class="fh_status pd_bar"><tt style="width:10%"></tt></span>
+										<p class="red">{{it.sale}}/{{it.stock}}</p>
 									</div>
 									<div class="mui-media-body">
-										商品名称
-										<p class='mui-ellipsis'>65465464564646464</p>
-									</div>
-								</a>
-							</li>	
-							<li class="mui-table-view-cell mui-media">
-								<a href="javascript:;">
-									<div class="mui-media-object mui-pull-right">
-										<span class="fh_status pd_bar"><tt></tt></span>
-										<p class="red">0/0</p>
-									</div>
-									<div class="mui-media-body">
-										商品名称
-										<p class='mui-ellipsis'>65465464564646464</p>
+										{{it.brand+it.style}}
+										<p class='mui-ellipsis'>{{it.code}}</p>
 									</div>
 								</a>
 							</li>	
 						</ul>
+						<div class="no-data">{{loadfoot}}</div>
 					</div>
 					<div class="swiper-slide slidepage">
 						<ul class="mui-table-view inv-item">
-							<li class="mui-table-view-cell mui-media">
+							<li class="mui-table-view-cell mui-media" v-for="it in resB.list" v-cloak>
 								<a href="javascript:;">
 									<div class="mui-media-object mui-pull-right">
 										<span class="fh_status pd_bar"><tt></tt></span>
-										<p class="red">0/0</p>
+										<p class="red">{{it.sale}}/{{it.stock}}</p>
 									</div>
 									<div class="mui-media-body">
-										商品名称
-										<p class='mui-ellipsis'>65465464564646464</p>
-									</div>
-								</a>
-							</li>	
-							<li class="mui-table-view-cell mui-media">
-								<a href="javascript:;">
-									<div class="mui-media-object mui-pull-right">
-										<span class="fh_status pd_bar"><tt></tt></span>
-										<p class="red">0/0</p>
-									</div>
-									<div class="mui-media-body">
-										商品名称
-										<p class='mui-ellipsis'>65465464564646464</p>
-									</div>
-								</a>
-							</li>	
-							<li class="mui-table-view-cell mui-media">
-								<a href="javascript:;">
-									<div class="mui-media-object mui-pull-right">
-										<span class="fh_status pd_bar"><tt></tt></span>
-										<p class="red">0/0</p>
-									</div>
-									<div class="mui-media-body">
-										商品名称
-										<p class='mui-ellipsis'>65465464564646464</p>
-									</div>
-								</a>
-							</li>	
-							<li class="mui-table-view-cell mui-media">
-								<a href="javascript:;">
-									<div class="mui-media-object mui-pull-right">
-										<span class="fh_status pd_bar"><tt></tt></span>
-										<p class="red">0/0</p>
-									</div>
-									<div class="mui-media-body">
-										商品名称
-										<p class='mui-ellipsis'>65465464564646464</p>
+										{{it.brand+it.style}}
+										<p class='mui-ellipsis'>{{it.code}}</p>
 									</div>
 								</a>
 							</li>	
 						</ul>
+						<div class="no-data">{{loadfoot}}</div>
 					</div>
 				</div>
 			</div>
@@ -134,10 +88,7 @@
 					</div>
 					<h5>品牌<span></span></h5>
 					<div class="cd-wall">
-						<span @click="selBrank()" :class="{cur:true}">测试品牌</span>
-						<span @click="selBrank()" :class="{cur:false}">测试品牌</span>
-						<span @click="selBrank()" :class="{cur:false}">测试品牌</span>
-						<span @click="selBrank()" :class="{cur:false}">测试品牌</span>
+						<span v-for="it in whereParm.list" v-cloak @click="selBrank(it)" :class="{cur:brankCur==it.guid}">{{it.name}}</span>
 					</div>
 				</div>
 				<div class="fyt-foot-button mui-clearfix">
@@ -153,24 +104,56 @@
 		<script src="../themes/js/app.js"></script>
 		<script>
 			mui.init();
-			var vm = new Vue({
+			var userModel = GetSession('$LoginUser'),vm = new Vue({
 				el: "#app",
 				data: {
+					resA:{
+						list:[],
+						page:1,
+						total:1
+					}, 
+					resB:{
+						list:[],
+						page:1,
+						total:1
+					},
 					whereParm:{
 						btime:'请选择开始时间',
 						etime:'请选择结束时间',
-						blank:''
-					}
+						list:[]
+					},
+					parm:{
+						guid:'',
+						btime:'',
+						etime:'',
+						types:1,
+						brand:''
+					},
+					loadfoot:'正在加载数据~',
+					brankCur:''
 				},
 				created:function(){
-					$(".cd-wall span").click(function() {
-						$(this).addClass("cur").siblings().removeClass('cur');
+					this.parm.guid=userModel.shopGuid;
+					var that=this;
+					baseAjax('/app/api/index/brank',null,function(res){
+						if(res.statusCode==200){
+							that.whereParm.list=res.data;
+						}else{
+							mui.toast('无品牌');
+						}
 					});
 				},
 				methods: {
 					findWhere:function(){
 						//确定查询
 						os.closeWhere();
+						if(curIndex==0){
+							this.resA.page=1;
+						}
+						if(curIndex==1){
+							this.resB.page=1;
+						}
+						os.init();
 					},
 					wheres:function(){						
 						os.openWhere();
@@ -183,16 +166,74 @@
 					},
 					resetWhere:function(){
 						this.whereParm.btime='请选择开始时间';
-						this.whereParm.etime='请选择开始时间';
-						this.whereParm.blank='';
+						this.whereParm.etime='请选择结束时间';
+						this.parm.btime='';
+						this.parm.etime='';
+						this.parm.brand='';
 					},
-					selBrank:function(){
-						
+					selBrank:function(m){
+						this.brankCur=m.guid;
+						this.parm.brand=m.guid;
 					}
 				}
 			});
-
+			mui.plusReady(function() {	
+				os.init();
+			});		
 			var os={
+				brec:function(){
+					return 'width:25%';
+				},
+				init:function(){
+					app.loading();
+					log(vm.parm);
+					if(curIndex==0){vm.parm.types=1;}
+					if(curIndex==1){vm.parm.types=2;}
+					if(vm.parm.btime!='' && vm.parm.etime!=''){vm.parm.types=3;}
+					baseAjax('/app/api/stock/inventory',vm.parm,function(res){
+						app.loadClose();
+						if(res.statusCode==200){
+							if(curIndex==0){								
+								vm.resA.total = res.count;
+								if(vm.resA.page == 1) {		
+									vm.resA.list=res.data;
+									if(vm.resA.total==1 && res.data.length<6 || res.data.length==0){
+										vm.loadfoot='';
+									}else{
+										vm.loadfoot='正在加载数据~';
+									}								
+								} else {	
+									$.each(res.data, function (i,item) {
+										vm.resA.list.push(item);
+									}); 
+									if(vm.resA.page >= vm.resA.total) {
+										vm.loadfoot='没有数据了~';
+									}
+								}
+							}
+							if(curIndex==1){								
+								vm.resB.total = res.count;
+								if(vm.resB.page == 1) {		
+									vm.resB.list=res.data;
+									if(vm.resB.total==1 && res.data.length<6 || res.data.length==0){
+										vm.loadfoot='';
+									}else{
+										vm.loadfoot='正在加载数据~';
+									}								
+								} else {	
+									$.each(res.data, function (i,item) {
+										vm.resB.list.push(item);
+									}); 
+									if(vm.resB.page >= vm.resB.total) {
+										vm.loadfoot='没有数据了~';
+									}
+								}
+							}							
+						}else{
+							mui.toast(res.msg);
+						}
+					})
+				},
 				closeWhere:function(){
 					$('.page-cover,.fyt-chwall').hide(600);
 					var activeSlidePosition = navSwiper.slides[curIndex].offsetLeft;
@@ -223,9 +264,11 @@
 						var d = e.date;
 						if(objs==1){
 							vm.whereParm.btime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+							vm.parm.btime=vm.whereParm.btime;
 						}
 						if(objs==2){
 							vm.whereParm.etime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+							vm.parm.etime=vm.whereParm.etime;
 						}
 					}, function(e) {
 					}, {
@@ -284,6 +327,9 @@
 					transitionStart: function() {
 						document.getElementById('where').style.color='rgba(51,51,51,1)';
 						curIndex = this.activeIndex;
+						if(curIndex==1){
+							if(vm.resB.list.length==0){os.init();}
+						}
 						activeSlidePosition = navSwiper.slides[curIndex].offsetLeft
 						//释放时导航粉色条移动过渡
 						bar.transition(tSpeed)

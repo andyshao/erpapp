@@ -22,9 +22,6 @@
 			</ul>
 			<div class="no-data">{{loadfoot}}</div>
 		</div>
-		<div class="load-container load mui-hidden">
-			<div class="loader">Loading...</div>
-		</div>
 		<script src="../themes/js/mui.min.js"></script>
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/zepto.min.js"></script>
@@ -38,7 +35,6 @@
 					loadfoot:'正在加载数据~',
 					parm: {
 						page: 1,
-						limit: 8,
 						total: 1
 					}
 				},
@@ -47,6 +43,7 @@
 				}
 			});
 			mui.plusReady(function() {
+				rightClose('setindex');
 				plusReady();
 				os.init();
 				window.onscroll = function() {　　
@@ -77,15 +74,17 @@
 			}
 			os = {
 				init: function() {
-					$(".load").removeClass('mui-hidden');
+					app.loading();
 					baseAjax('app/api/user/message', vm.parm, function(res) {
-						$(".load").addClass('mui-hidden');
+						app.loadClose();
 						if(res.statusCode == 200) {							
 							vm.parm.total = res.count;
 							if(vm.parm.page == 1) {
 								vm.list = res.data;
-								if(vm.parm.total==1 && res.data.length<6){
+								if(vm.parm.total==1 && res.data.length<6 || res.data==null){
 									vm.loadfoot='';
+								}else if(vm.parm.page == vm.parm.total){
+									vm.loadfoot='已全部加载完成~';
 								}else{
 									vm.loadfoot='正在加载数据~';
 								}	

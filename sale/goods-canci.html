@@ -12,15 +12,20 @@
 			<div class="good-wall">
 				<div class="good_code">
 					<div id="bcTarget"><img src="../themes/img/code.png" /></div>
-					<p>ASDF6645645-6645</p>
+					<p>{{code}}</p>
 				</div>
 				<div class="good-info">
-					<h4>无此商品</h4>
-					<p>款式：--　　尺码：--　　</p>
-					<p><span>商品单价</span><strong>￥50元</strong></p>
-					<p><span>账单编号</span><strong>64564645645645</strong></p>
-					<p><span>下单时间</span><strong class="red">2018-07-01</strong></p>
-					<p class="sign-price"><span>单品价格</span><strong><input type="number" /></strong></p>
+					<h4>{{model.goodName}}</h4>
+					<p>品牌：{{model.brankName}}　款式：{{model.styleName}}　库存：{{model.stockSum}}</p>
+					<p><span>商品单价</span><strong>￥{{parseInt(model.disPrice)}}元</strong></p>
+					<p><span>下单时间</span><strong class="red">{{model.time}}</strong></p>
+					<p class="sign-price"><span>单品价格</span><strong><input v-model="parm.RealMoney" type="number" /></strong></p>
+				</div>
+				<div class="det_item mui-clearfix" style="padding-left: 10px;"><span>是否会员</span>
+					<div class="mui-switch"><div class="mui-switch-handle"></div></div>
+				</div>
+				<div class="det_item memphone mui-hidden">
+					<input type="text" class="" v-model="parm.UserGuid" placeholder="请输入会员手机号码">
 				</div>
 				<div class="mui-numbox buy-num" data-numbox-min='1' data-numbox-max='100'>
 					<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
@@ -30,7 +35,7 @@
 			</div>
 			<div class="barcode-foot mui-clearfix">
 				<button type="button" @click="cancel" class="mui-btn mui-btn-danger">取消</button>
-				<button type="button" @click="goPrint" class="mui-btn mui-btn-danger">确认消费</button>
+				<button type="button" :disabled="disabled" @click="goPrint" class="mui-btn mui-btn-danger">{{btnText}}</button>
 			</div>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
@@ -38,10 +43,55 @@
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
-			var vm = new Vue({
+			var barJson=GetSession('$barcode'),userModel = GetSession('$LoginUser'),isUser=false, vm = new Vue({
 				el: "#app",
 				data: {
-					
+					code:'',
+					model:{
+						brankName:'--',
+						styleName:'--',
+						disPrice:'0',
+						shopName:'--',
+						time:'--',
+						goodName:'无此商品'
+					},
+					parm:{
+						ShopGuid:'',
+						AdminGuid:'',
+						UserGuid:'',
+						SaleType:2,
+						Counts:1,
+						RealMoney:0,
+						goodsJson:''
+					},
+					disabled:true,
+					btnText:'确认消费',
+					orderShop:{
+						number:'',
+						list:[]
+					}
+				},
+				created: function () {
+					var that=this;	
+					this.code=barJson.code;
+					app.loading();
+					baseAjax('app/api/goods/bycode',{shopGuid:userModel.shopGuid,code:barJson.code},function(res){
+						app.loadClose();
+						if(res.statusCode==200){
+							if(!res.good){
+								return;
+							}	
+							//赋值给订单对象，给打印订单使用
+							vm.orderShop.list.push({goodName:res.good.brankName+res.good.styleName,goodMoney:parseInt(res.good.disPrice)});
+							that.disabled=false;
+							that.model=res.good;
+							that.model.shopName=userModel.shopName;
+							that.model.time=getNowFormatDate();	
+							that.model.goodName=vm.model.brankName+vm.model.styleName;							
+						}else{
+							mui.toast('服务器错误');
+						}
+					})
 				},
 				methods: {
 					cancel:function(){
@@ -53,22 +103,57 @@
 		    			wc.close();
 					},
 					goPrint:function(){
-						goWin('print','print.html','小票打印');
+						this.parm.Counts=parseInt($("#goodnum").val());
+						this.parm.ShopGuid=userModel.shopGuid;
+						this.parm.AdminGuid=userModel.staffGuid;
+						//判断库存是否足够
+						if(this.parm.Counts>this.model.stockSum){
+							mui.toast('库存不足~');
+							return;
+						}
+						if(!this.parm.RealMoney){
+							mui.toast('请输入价格~');
+							return;
+						}
+						if(isUser){
+							//判断手机号码是否为空
+							if(!this.parm.UserGuid){
+								mui.toast('请输入手机号码~');
+								return;
+							}
+						}
+						this.parm.goodsJson='[{GoodsGuid:"'+this.model.guid+'",Counts:'+this.parm.Counts+'}]';
+						vm.btnText='正在提交订单';
+						vm.disabled=true;	
+						var that=this;					
+						baseAjax('app/api/sale/add/order',this.parm,function(res){							
+							if(res.statusCode==200){
+								that.orderShop.number=res.data;
+								SetSession('$SaleOrder',that.orderShop);
+								goWin('print','print.html','小票打印');
+							}else{
+								mui.toast(res.message);
+							}
+							that.disabled=false;
+							that.btnText='确认消费';
+						});
 					}
 				}
 			});	
-			mui.init({
-				swipeBack:true
-			});
 			mui('.det_item .mui-switch').each(function() {				
 				this.addEventListener('toggle', function(event) {
 					if(event.detail.isActive){
 						$(".memphone").removeClass('mui-hidden');
+						isUser=true;
 					}else{
 						$(".memphone").addClass('mui-hidden');
+						isUser=false;
 					}
 				});
 			});
+			mui.init({
+				swipeBack:true
+			});			
 			//重写返回键
 			mui.back=function(){
 				var wsbar = plus.webview.getWebviewById('barcode');

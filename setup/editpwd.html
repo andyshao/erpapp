@@ -32,6 +32,9 @@
 		<script src="../themes/js/app.js"></script>
 		<script>
 			mui.init();
+			mui.plusReady(function() {
+				rightClose('setindex');
+			});			
 			var vm = new Vue({
 				el: "#app",
 				data:{

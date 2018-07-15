@@ -9,6 +9,7 @@ ul,li{list-style-type: none; margin: 0; padding: 0;}
 .mui-btn-danger{border: 1px solid #FF6D6F;background-color: #FF6D6F}
 .mui-poppicker-header .mui-btn-blue,.mui-dtpicker-header .mui-btn-blue{border: 1px solid #FF6D6F;background-color: #FF6D6F;}
 .mui-switch:before{top:1px}
+* { touch-action: pan-y; } 
 /* 首页  */
 .in_header{ background-color: #FF6D6F; color: #FFFFFF; height: 200px;padding:15px; padding-top: 40px;}
 .in_header .in_top{ color: #FFFFFF; text-align: center; position: relative;}
@@ -198,7 +199,7 @@ background-color: #c8c7cc;height: 1px; width: 100%;}
 .sale-item .footer:before{width: 100%; position: absolute; content: ''; -webkit-transform: scaleY(.5); transform: scaleY(.5); background-color: #e6e7e8;
     height: 1px; top: 0px; left: 0px;}
 .sale-item .footer button{ padding: 3px 15px;}
-.sale-item .footer span{float: left; font-size: 14px;}
+.sale-item .footer span{ font-size: 14px;}
 .sale-item .footer span i{margin-right: 5px; color: #FF6D6E;}
 .sale-item .sale-info{ padding:10px; position: relative;}
 .sale-item .sale-info h4{font-weight: 400; font-size: 15px;}
@@ -214,6 +215,10 @@ font-size: 13px; text-align: center;; line-height: 35px; position: absolute; rig
 /* 测试下拉刷新 
 .fyt-scroll{ height: 100%; top: 45px;}
 .fyt-scroll #page{top: 0px;}*/
+
+/* 折扣 */
+.dic-wall{padding:10px 15px; text-align: center;}
+.dic-wall span{display: inline-block; border: 1px solid #CF2D28; color: #CF2D28; padding:1px 5px; margin:0 10px; font-size: 13px;}
 
 #top {
 	position:absolute;
@@ -280,11 +285,12 @@ font-size: 13px; text-align: center;; line-height: 35px; position: absolute; rig
 	height: calc(100%);
 	overflow: auto;
 }
-
+.loading-cover{position: fixed; z-index: 1000; top: 0px; left: 0px; right: 0px; bottom: 0px; background-color:rgba(0, 0, 0, .2);}
 .load-container {
   width:150px;
   height: 100px;
   position:fixed;
+  z-index: 1001;
   overflow: hidden;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
