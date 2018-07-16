@@ -20,12 +20,12 @@
 				</div>
 				<div class="foot mui-clearfix">
 					<span class="span_th" @click="goScanCode(3)"><i class="mui-icon mui-icon-loop"></i>退货</span>
-					<span class="span_fh" @click="goReturn"><i class="mui-icon mui-icon-undo"></i>返货</span>
+					<span class="span_fh" @click="goPage('返货管理','retnrulog','stock/return-log.html')"><i class="mui-icon mui-icon-undo"></i>返货</span>
 				</div>
 			</div>
 			<div class="in_ornum mui-clearfix">
-				<div @click="goPageRbtn('营业额','turnover','sale/day.html')"><strong id="dayo">0</strong><br>今日订单</div>
-				<div @click="goPageRbtn('营业额','turnover','sale/day.html')"><strong id="daym">￥0</strong><br>今日营业额</div>
+				<div @click="goPageRbtn('营业额','daysale','sale/day.html')"><strong id="dayo">{{dayRes.orderSum}}</strong><br>今日订单</div>
+				<div @click="goPageRbtn('营业额','daysale','sale/day.html')"><strong id="daym">￥{{dayRes.money}}</strong><br>今日营业额</div>
 			</div>
 			<div class="in_nav">
 				<ul class="mui-table-view mui-grid-view mui-grid-9">
@@ -35,13 +35,13 @@
 							<div class="mui-media-body">销售管理</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('统计报表','sale','sale/report.html')">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('统计报表','report','sale/report.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/tongji.png">
 							<div class="mui-media-body">统计报表</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('库存盘点','sale','sale/inventory.html')">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('库存盘点','inventory','sale/inventory.html')">
 						<a href="javascript:void(0)">
 							<img src="themes/img/icon/pandian.png">
 							<div class="mui-media-body">库存盘点</div>
@@ -109,9 +109,10 @@
 		<script src="themes/js/app.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			mui.init();
-			var userModel;
-			mui.plusReady(function() {				
-				userModel = GetSession('$LoginUser');
+			var _self=null,userModel = GetSession('$LoginUser');
+			mui.plusReady(function() {
+				plusReady();
+				os.dayInit();
 				if(userModel == null) {
 					mui.openWindow({ 
 						url: 'login.html',
@@ -132,6 +133,20 @@
 				})
 			});
 			var os={
+				dayInit:function(){
+					if(userModel==null){return;}
+					vm.parm.guid = userModel.shopGuid;			
+					baseAjax('/app/api/stock/turnover',vm.parm,function(res){
+						if(res.statusCode==200){
+							vm.dayRes=res.data;
+						}else{
+							mui.toast(res.message);
+						}
+						if(_self!=null){
+							_self.endPullToRefresh();
+						}
+					});
+				},
 				init:function(){
 					userModel = GetSession('$LoginUser');
 					if(userModel==null)return;
@@ -141,7 +156,22 @@
 			var vm = new Vue({
 				el: "#app",
 				data:{
-					model:{}
+					model:{},
+					dayRes:{
+						orderSum:0,
+						money:0
+					},
+					parm: {
+						page:1,
+						guid: '',
+						types: 1
+					},
+				},
+				created: function() {
+					var that=this;
+					if(userModel!=null){
+						this.parm.guid = userModel.shopGuid;					
+					}
 				},
 				methods:{
 					goPage:function(title,id,url){
@@ -180,6 +210,22 @@
 					}
 				}
 			});
+			function plusReady() {
+							_self = plus.webview.currentWebview();
+							_self.setPullToRefresh({
+								support: true,
+								height: '50px',
+								range: '150px',
+								style: 'circle',
+								offset: '200px'
+							}, pulldownRefresh);
+						}
+			
+						function pulldownRefresh() {
+							setTimeout(function() {
+								os.dayInit();
+							}, 500);
+						}
 		</script>
 	</body>
 

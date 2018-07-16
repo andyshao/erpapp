@@ -64,7 +64,6 @@
 			            var info = plus.push.getClientInfo();
 			            this.model.token=info.token;
 			            this.model.deviceName=plus.device.vendor;
-			            log(this.model);			            
 						natiopen=plus.nativeUI.showWaiting("登录中，请等待...", {modal:true});
 						baseAjax('app/api/user/login',this.model,function(res){
 							natiopen.close();

@@ -178,6 +178,7 @@
 				}
 			});
 			mui.plusReady(function() {	
+				rightClose('inventory');
 				os.init();
 			});		
 			var os={
@@ -186,7 +187,6 @@
 				},
 				init:function(){
 					app.loading();
-					log(vm.parm);
 					if(curIndex==0){vm.parm.types=1;}
 					if(curIndex==1){vm.parm.types=2;}
 					if(vm.parm.btime!='' && vm.parm.etime!=''){vm.parm.types=3;}

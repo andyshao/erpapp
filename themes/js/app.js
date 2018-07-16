@@ -146,6 +146,7 @@ timeouts = 20000; //超时请求时间为10秒
 				} else if(type == 'error') {
 					mui.toast('连接异常，请稍后重试！');
 				}
+				app.loadClose();
 			}
 		});
 	}

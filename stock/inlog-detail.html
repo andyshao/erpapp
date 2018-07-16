@@ -29,6 +29,9 @@
 		<script src="../themes/js/app.js"></script>
 		<script>
 			mui.init();
+			mui.plusReady(function() {
+				rightClose('inlogdetail');				
+			});
 			var vm = new Vue({
 				el: "#app",
 				data:{

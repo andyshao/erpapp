@@ -37,6 +37,12 @@
 		<script src="../themes/js/app.js"></script>
 		<script>
 			mui.init();
+			mui.plusReady(function() {
+				rightClose('incheck');				
+				window.addEventListener('customEvent',function(event){
+				   
+				})
+			});
 			var vm = new Vue({
 				el: "#app",
 				data:{

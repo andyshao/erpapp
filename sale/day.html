@@ -14,18 +14,19 @@
 		<div id="app">
 			<div class="now_month"><span>{{showText}}</span></div>
 			<div class="in_ornum day_wall mui-clearfix">
-				<div><strong id="dayo">0</strong><br><span id="noworder">{{showText}}订单</span></div>
-				<div><strong id="daym">￥0</strong><br><span id="nowmoney">{{showText}}营业额</span></div>
+				<div><strong id="dayo">{{dayRes.orderSum}}</strong><br><span id="noworder">{{showText}}订单</span></div>
+				<div><strong id="daym">￥{{dayRes.money}}</strong><br><span id="nowmoney">{{showText}}营业额</span></div>
 			</div>
 			<ul class="mui-table-view inv-item report-item">
-				<li class="mui-table-view-cell mui-media">
+				<li class="mui-table-view-cell mui-media" v-for="it in res.list" v-cloak>
 					<a href="javascript:;">
-						<span class="mui-media-object mui-pull-right"><strong>10</strong>件</span>
-						<div class="mui-media-body">商品名称</div>
-						<p class='mui-ellipsis'>46556464646464</p>
+						<span class="mui-media-object mui-pull-right"><strong>{{it.sale}}</strong>件</span>
+						<div class="mui-media-body">{{it.brand+it.style}}</div>
+						<p class='mui-ellipsis'>{{it.code}}</p>
 					</a>
 				</li>
 			</ul>
+			<div class="no-data">{{loadfoot}}</div>
 			<div class="page-cover turnover-cover" @click="closeWhere"></div>
 			<div class="fyt-chwall turnover-chwall">
 				<div class="mui-scroll">
@@ -48,18 +49,30 @@
 		<script src="../themes/js/zepto.min.js"></script>
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
-		<script>			
-			var _self,isOpenWhere=false;
+		<script>
+			var _self, isOpenWhere = false;
 			mui.init();
 			mui.plusReady(function() {
-				plusReady();				
-				window.addEventListener('customEvent',function(event){
-				   	if(!isOpenWhere){
+				rightClose('daysale');
+				os.init();
+				os.dayTurnover();
+				plusReady();
+				window.addEventListener('customEvent', function(event) {
+					if(!isOpenWhere) {
 						os.openWhere();
-					}else{
+					} else {
 						os.closeWhere();
-					}	
+					}
 				})
+				window.onscroll = function() {　　
+					if(getScrollTop() + getWindowHeight() == getScrollHeight()) {
+						if(vm.parm.page == vm.res.total) {
+							return;
+						}　　　　
+						vm.parm.page = vm.parm.page + 1;						
+						os.init();　　
+					}
+				};
 			});
 
 			function plusReady() {
@@ -75,65 +88,130 @@
 
 			function pulldownRefresh() {
 				setTimeout(function() {
-					_self.endPullToRefresh();
+					os.init();
+					os.dayTurnover();
 				}, 500);
 			}
-			var vm = new Vue({
-				el: "#app",
-				data: {
-					selDay:1,
-					showText:'今日',
-					whereParm:{
-						btime:'请选择开始时间',
-						etime:'请选择结束时间'
+			var userModel = GetSession('$LoginUser'),
+				vm = new Vue({
+					el: "#app",
+					data: {
+						selDay: 1,
+						showText: '今日',
+						whereParm: {
+							btime: '请选择开始时间',
+							etime: '请选择结束时间'
+						},
+						res: {
+							list: [],
+							page: 1,
+							total: 1
+						},
+						dayRes:{
+							orderSum:0,
+							money:0
+						},
+						parm: {
+							page:1,
+							guid: '',
+							btime: '',
+							etime: '',
+							types: 1
+						},
+						loadfoot: '正在加载数据~'
 					},
+					created: function() {
+						this.parm.guid = userModel.shopGuid;
+					},
+					methods: {
+						findWhere: function() {
+							//确定查询
+							os.closeWhere();
+							if(this.selDay == 1) {
+								this.showText = '今日';
+							} else {
+								this.showText = '本月';
+							}
+							os.init();
+							os.dayTurnover();
+						},
+						wheres: function() {
+							os.openWhere();
+						},
+						openDate: function(m) {
+							os.pickDate(m);
+						},
+						closeWhere: function() {
+							os.closeWhere();
+						},
+						resetWhere: function() {
+							this.whereParm.btime = '请选择开始时间';
+							this.whereParm.etime = '请选择结束时间';
+							this.selDay = 1;
+							this.parm.btime = '';
+							this.parm.etime = '';
+							this.parm.types = 1;
+						},
+						selday: function(m) {
+							this.whereParm.btime = '请选择开始时间';
+							this.whereParm.etime = '请选择结束时间';
+							this.selDay = m;
+							this.parm.types = m;
+							this.parm.btime = '';
+							this.parm.etime = '';
+						}
+					}
+				});
+			var os = {
+				init: function() {
+					app.loading();
+					if(vm.parm.btime != '' && vm.parm.etime != '') {
+						vm.parm.types = 3;
+					}
+					log(vm.parm);
+					baseAjax('/app/api/stock/inventory', vm.parm, function(res) {
+						app.loadClose();
+						if(res.statusCode == 200) {
+							vm.res.total = res.count;
+							if(vm.parm.page == 1) {
+								vm.res.list = res.data;
+								if(vm.res.total == 1 && res.data.length < 6 || res.data.length == 0) {
+									vm.loadfoot = '';
+								} else {
+									vm.loadfoot = '正在加载数据~';
+								}
+							} else {
+								$.each(res.data, function(i, item) {
+									vm.res.list.push(item);
+								});
+								if(vm.parm.page >= vm.res.total) {
+									vm.loadfoot = '没有数据了~';
+								}
+							}
+						} else {
+							mui.toast(res.msg);
+						}
+						_self.endPullToRefresh();
+					})
 				},
-				created:function(){
-					$(".cd-wall span").click(function() {
-						$(this).addClass("cur").siblings().removeClass('cur');
+				dayTurnover:function(){
+					baseAjax('/app/api/stock/turnover',vm.parm,function(res){
+						if(res.statusCode==200){
+							vm.dayRes=res.data;
+						}else{
+							mui.toast(res.message);
+						}
 					});
 				},
-				methods: {
-					findWhere:function(){
-						//确定查询
-						os.closeWhere();
-						if(this.selDay==1){
-							this.showText='今日';
-						}else{
-							this.showText='本月';
-						}
-					},
-					wheres:function(){						
-						os.openWhere();
-					},
-					openDate:function(m){
-						os.pickDate(m);
-					},
-					closeWhere:function(){
-						os.closeWhere();
-					},
-					resetWhere:function(){
-						this.whereParm.btime='请选择开始时间';
-						this.whereParm.etime='请选择结束时间';
-						this.selDay=1;
-					},
-					selday:function(m){
-						this.whereParm.btime='请选择开始时间';
-						this.whereParm.etime='请选择结束时间';
-						this.selDay=m;						
-					}
-				}
-			});
-			var os={
-				closeWhere:function(){
+				closeWhere: function() {
 					$('.page-cover,.fyt-chwall').hide(600);
-					isOpenWhere=false;
+					isOpenWhere = false;
 				},
-				openWhere:function(){					
+				openWhere: function() {
 					$('.page-cover,.fyt-chwall').show(600);
-					isOpenWhere=true;
+					isOpenWhere = true;
 				},
-				pickDate:function(objs){
+				pickDate: function(objs) {
 					var dDate = new Date();
 					var minDate = new Date();
 					minDate.setFullYear(2010, 0, 1);
@@ -141,14 +219,15 @@
 					maxDate.setFullYear(2050, 12, 31);
 					plus.nativeUI.pickDate(function(e) {
 						var d = e.date;
-						if(objs==1){
-							vm.whereParm.btime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						if(objs == 1) {
+							vm.whereParm.btime = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+							vm.parm.btime = vm.whereParm.btime;
 						}
-						if(objs==2){
-							vm.whereParm.etime=d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						if(objs == 2) {
+							vm.whereParm.etime = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+							vm.parm.etime = vm.whereParm.etime;
 						}
-					}, function(e) {
-					}, {
+					}, function(e) {}, {
 						title: "",
 						date: dDate,
 						minDate: minDate,

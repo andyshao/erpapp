@@ -127,14 +127,16 @@
 			os={
 				init:function(){ 
 					app.loading();
-					var barcode=GetSession('$barcode');					
+					var barcode=GetSession('$barcode');		
 					baseAjax('app/api/goods/bycode',{shopGuid:userModel.shopGuid,code:barcode.code},function(res){
 						app.loadClose();
 						if(res.statusCode==200){
 							//log(res.good);
 							if(!res.good){
+								mui.toast('没有查询到商品~');
 								return;
 							}
+							vm.disabled=false;
 							//赋值给订单对象，给打印订单使用
 							vm.orderShop.list.push({goodName:res.good.brankName+res.good.styleName,goodMoney:parseInt(res.good.disPrice)});
 							
@@ -147,7 +149,6 @@
 								return;
 							}
 							vm.activity=res.activity;
-							vm.disabled=false;
 							if(vm.activity.method=='满减'){
 								//序列化满减信息
 								vm.fullBack=JSON.parse(vm.activity.fullBack);
