@@ -47,7 +47,7 @@
 							<li class="mui-table-view-cell mui-media" v-for="it in resA.list" v-cloak>
 								<a href="javascript:;">
 									<div class="mui-media-object mui-pull-right">
-										<span class="fh_status pd_bar"><tt style="width:10%"></tt></span>
+										<span class="fh_status pd_bar"><tt :style="'width:'+(it.sale/it.stock*100)+'%'"></tt></span>
 										<p class="red">{{it.sale}}/{{it.stock}}</p>
 									</div>
 									<div class="mui-media-body">
@@ -64,7 +64,7 @@
 							<li class="mui-table-view-cell mui-media" v-for="it in resB.list" v-cloak>
 								<a href="javascript:;">
 									<div class="mui-media-object mui-pull-right">
-										<span class="fh_status pd_bar"><tt></tt></span>
+										<span class="fh_status pd_bar"><tt :style="'width:'+(it.sale/it.stock*100)+'%'"></tt></span>
 										<p class="red">{{it.sale}}/{{it.stock}}</p>
 									</div>
 									<div class="mui-media-body">

@@ -59,7 +59,7 @@
 							<div class="mui-media-body">返货管理</div>
 						</a>
 					</li>
-					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3" @click="goPage('购物车','cart','sale/cart.html')">
 						<a href="javascript:void(0)" id="homeCart">
 							<img src="themes/img/icon/cart.png"><span class="mui-badge mui-badge-red" style="display: none;">0</span>
 							<div class="mui-media-body">购物车</div>
@@ -111,6 +111,7 @@
 			mui.init();
 			var _self=null,userModel = GetSession('$LoginUser');
 			mui.plusReady(function() {
+				//SessionRemove('$SaleCart');
 				plusReady();
 				os.dayInit();
 				if(userModel == null) {

@@ -57,7 +57,7 @@
 						<ul class="mui-table-view inv-item report-item">
 							<li class="mui-table-view-cell mui-media" v-for="it in resB.list" v-cloak>
 								<a href="javascript:;">
-									<span class="mui-media-object mui-pull-right"><strong>{{it.sale}}</strong>件</span>
+									<span class="mui-media-object mui-pull-right"><strong>{{it.stock-it.returnSum-it.sale}}</strong>件</span>
 									<div class="mui-media-body">{{it.brand+it.style}}</div>
 									<p class='mui-ellipsis'>{{it.code}}</p>
 								</a>
@@ -180,7 +180,7 @@
 					if(vm.parm.btime!='' && vm.parm.etime!=''){vm.parm.types=3;}
 					baseAjax('/app/api/stock/inventory',vm.parm,function(res){
 						app.loadClose();
-						if(res.statusCode==200){
+						if(res.statusCode==200){ 
 							if(curIndex==0){								
 								vm.resA.total = res.count;
 								if(vm.resA.page == 1) {		

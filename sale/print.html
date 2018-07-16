@@ -97,6 +97,10 @@
 				if(wsinput!=null){
 					wsinput.close();
 				}
+				var wscart = plus.webview.getWebviewById('cart');
+				if(wscart!=null){
+					wscart.close();
+				}
 				var wc=plus.webview.currentWebview();
     			wc.close();
 			}

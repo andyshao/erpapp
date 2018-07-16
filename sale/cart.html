@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>购物车</title>
+    <link href="../themes/css/mui.min.css" rel="stylesheet" />
+    <link href="../themes/css/iconfont.css" rel="stylesheet" />
+    <link href="../themes/css/app.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+		<ul class="mui-table-view inv-item report-item cart-item">
+			<li class="mui-table-view-cell mui-media" v-for="it in list" v-cloak>
+				<a href="javascript:;">
+					<span class="cart-del mui-pull-right" @click="del(it)"><i class="mui-icon mui-icon-trash"></i></span>
+					<span class="mui-media-object mui-pull-right"><strong>{{it.Counts}}</strong>件</span>
+					<div class="mui-media-body">
+						{{it.goodname}}
+						<p class='mui-ellipsis'>{{it.code}}</p>
+					</div>
+				</a>
+			</li>
+		</ul>
+		<div class="cart-user">
+			<div class="det_item mui-clearfix"><span>是否会员</span>
+				<div class="mui-switch"><div class="mui-switch-handle"></div></div>
+			</div>
+			<div class="det_item memphone mui-hidden">
+				<input type="text" class="" v-model="parm.UserGuid" placeholder="请输入会员手机号码">
+			</div>
+		</div>
+		<div class="cart_foot mui-clearfix">			
+			<div class="cart_sum" v-html="foot.text"></div>
+			<div class="cart_btn"><button type="button" :disabled="disabled" @click="buys">购买</button></div>
+		</div>
+    </div>
+    <script src="../themes/js/mui.min.js"></script>
+    <script src="../themes/js/zepto.min.js"></script>
+    <script src="../themes/js/vue.js"></script>
+    <script src="../themes/js/app.js"></script>
+    <script>
+        var userModel = GetSession('$LoginUser'),isUser=false,saleCart=GetSession('$SaleCart'),activity=GetSession('$SaleActivity'),
+            vm = new Vue({
+                el: "#app",
+                data: {
+					list:[],
+					foot:{
+						text:'',
+						money:0,
+						sums:0
+					},
+					footText:'',
+					disabled:true,
+					parm:{
+						UserGuid:'',
+						ShopGuid:'',
+						AdminGuid:'',
+						ActivityName:'',
+						SaleType:1,
+						Counts:1,
+						goodsJson:''
+					},
+					orderShop:{
+						number:'',
+						list:[]
+					}
+				},
+                created: function () {		
+					log(saleCart);log(activity);
+					this.parm.ShopGuid=userModel.shopGuid;
+					this.parm.AdminGuid=userModel.staffGuid;
+					if(activity!=null){
+						this.parm.ActivityName=activity.guid;
+					}
+					if(saleCart==null){
+						this.foot.text='<span>暂无商品</span>';
+					}else{						
+						this.disabled=false;
+						var that=this;
+						$.each(saleCart,function(index,item){
+							that.foot.sums+=item.Counts;
+							that.foot.money+=parseInt(item.money)*item.Counts;
+						});	
+						this.parm.Counts=this.foot.sums;
+						this.foot.text='<h5>总金额：'+that.foot.money+'元</h5><p>共'+that.foot.sums+'件</p>';
+						this.list=saleCart;
+					}
+                },
+                methods: {
+					buys:function(){
+						var that=this;	
+						var tempJson=[];
+						$.each(saleCart,function(index,item){
+							tempJson.push({GoodsGuid:item.GoodsGuid,Counts:item.Counts});
+							//赋值给订单对象，给打印订单使用
+							that.orderShop.list.push({goodName:item.goodname,goodMoney:parseInt(item.money)*item.Counts});
+						});	
+						this.parm.goodsJson=JSON.stringify(tempJson);
+						log(this.parm);
+						this.disabled=true;											
+						baseAjax('app/api/sale/add/order',this.parm,function(res){							
+							if(res.statusCode==200){
+								that.orderShop.number=res.data;
+								SetSession('$SaleOrder',that.orderShop);
+								//删除购物车
+								SessionRemove('$SaleCart');
+								//删除保存的临时活动信息
+								SessionRemove('$SaleActivity');
+								goWin('print','print.html','小票打印');
+							}else{
+								mui.toast(res.message);
+							}
+							that.disabled=false;
+						});
+					},
+					del:function(m){
+						var that=this;
+						var btnArray = ['是', '否'];
+						mui.confirm('确定要删除该商品吗？', '', btnArray, function(e) {
+							if (e.index == 0) {
+								$.each(saleCart,function(index,item){
+									if(item.GoodsGuid==m.GoodsGuid){
+										that.foot.sums-=item.Counts;
+										that.foot.money-=parseInt(item.money)*item.Counts;
+										saleCart.splice(index,1);
+									}
+								});								
+								that.list=saleCart;
+								if(that.list.length==0){
+									SessionRemove('$SaleCart');
+									that.foot.text='<span>暂无商品</span>';
+									that.disabled=true;
+								}else{
+									that.parm.Counts=that.foot.sums;
+									that.foot.text='<h5>总金额：'+that.foot.money+'元</h5><p>共'+that.foot.sums+'件</p>';
+									SetSession('$SaleCart',saleCart);
+								}								
+							} 						
+						})						
+					}
+                }
+            });
+		mui('.det_item .mui-switch').each(function() {				
+			this.addEventListener('toggle', function(event) {
+				if(event.detail.isActive){
+					$(".memphone").removeClass('mui-hidden');
+					isUser=true;
+				}else{
+					$(".memphone").addClass('mui-hidden');
+					isUser=false;
+				}
+			});
+		});
+    </script>
+</body>
+
+</html>
