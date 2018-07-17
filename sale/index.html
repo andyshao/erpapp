@@ -54,7 +54,7 @@
 							</div>
 							<div class="footer"><span><i class="iconfont icon-riqi"></i>{{it.addDate}}</span></div>
 						</div>	
-						<div class="no-data">{{loadfoot}}</div>
+						<div class="no-data" @click="more">{{resA.foot}}</div>
 					</div>
 					<div class="swiper-slide slidepage">
 						<div class="sale-item" v-for="it in resB.list" v-cloak>
@@ -66,7 +66,7 @@
 							</div>
 							<div class="footer"><span><i class="iconfont icon-riqi"></i>{{it.addDate}}</span></div>
 						</div>	
-						<div class="no-data">{{loadfoot}}</div>
+						<div class="no-data" @click="more">{{resB.foot}}</div>
 					</div>
 					<div class="swiper-slide slidepage">
 						<div class="sale-item" v-for="it in resC.list" v-cloak>
@@ -78,7 +78,7 @@
 							</div>
 							<div class="footer"><span><i class="iconfont icon-riqi"></i>{{it.addDate}}</span></div>
 						</div>	
-						<div class="no-data">{{loadfoot}}</div>
+						<div class="no-data" @click="more">{{resC.foot}}</div>
 					</div>
 				</div>
 			</div>			
@@ -118,38 +118,41 @@
 					}else{
 						os.closeWhere();
 					}				   	
-				})
+				})				
 			});			
 			var userModel = GetSession('$LoginUser'),vm = new Vue({
 				el: "#app",
 				data: {
 					resA:{
 						list:[],
-						page:1,
-						total:1
+						page:1,						
+						total:1,
+						foot:'正在加载数据~'
 					}, 
 					resB:{
 						list:[],
 						page:1,
-						total:1
+						total:1,
+						foot:'正在加载数据~'
 					},
 					resC:{
 						list:[],
 						page:1,
-						total:1
+						total:1,
+						foot:'正在加载数据~'
 					},
 					whereParm:{
 						btime:'请选择开始时间',
 						etime:'请选择结束时间'
 					},
 					parm:{
+						page:1,
 						guid:'',
 						btime:'',
 						etime:'',
 						saleType:0,
 						activityTypes:0
-					},
-					loadfoot:'正在加载数据~'
+					}
 				},
 				created:function(){
 					this.parm.guid=userModel.shopGuid;
@@ -158,6 +161,28 @@
 					});
 				},
 				methods: {
+					more:function(){
+						var that=this;
+						if(curIndex==0){
+							if(that.resA.total>that.resA.page){								
+								that.parm.page=that.resA.page+1;
+								that.resA.page=that.resA.page+1;
+							}
+						}
+						if(curIndex==1){
+							if(that.resB.total>that.resB.page){								
+								that.parm.page=that.resB.page+1;
+								that.resB.page=that.resB.page+1;
+							}
+						}
+						if(curIndex==2){
+							if(that.resC.total>that.resC.page){								
+								that.parm.page=that.resC.page+1;
+								that.resC.page=that.resC.page+1;
+							}
+						}
+						os.init();
+					},
 					findWhere:function(){
 						//确定查询
 						os.closeWhere();
@@ -204,17 +229,17 @@
 								vm.resA.total = res.count;
 								if(vm.resA.page == 1) {		
 									vm.resA.list=res.data;
-									if(vm.resA.total==1 && res.data.length<6 || res.data.length==0){
-										vm.loadfoot='';
+									if(vm.resA.total==1 && res.data.length<6 || res.data.length==0 || vm.resA.total==1){
+										vm.resA.foot='';
 									}else{
-										vm.loadfoot='正在加载数据~';
+										vm.resA.foot='点击加载数据~';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {
 										vm.resA.list.push(item);
 									}); 
 									if(vm.resA.page >= vm.resA.total) {
-										vm.loadfoot='没有数据了~';
+										vm.resA.foot='没有数据了~';
 									}
 								}
 							}
@@ -223,16 +248,16 @@
 								if(vm.resB.page == 1) {		
 									vm.resB.list=res.data;
 									if(vm.resB.total==1 && res.data.length<6 || res.data.length==0){
-										vm.loadfoot='';
+										vm.resB.foot='';
 									}else{
-										vm.loadfoot='正在加载数据~';
+										vm.resB.foot='点击加载数据~';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {
 										vm.resB.list.push(item);
 									}); 
 									if(vm.resB.page >= vm.resB.total) {
-										vm.loadfoot='没有数据了~';
+										vm.resB.foot='没有数据了~';
 									}
 								}
 							}
@@ -241,16 +266,16 @@
 								if(vm.resC.page == 1) {		
 									vm.resC.list=res.data;
 									if(vm.resC.total==1 && res.data.length<6 || res.data.length==0){
-										vm.loadfoot='';
+										vm.resC.foot='';
 									}else{
-										vm.loadfoot='正在加载数据~';
+										vm.resC.foot='点击加载数据~';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {
 										vm.resC.list.push(item);
 									}); 
 									if(vm.resC.page >= vm.resC.total) {
-										vm.loadfoot='没有数据了~';
+										vm.resC.foot='没有数据了~';
 									}
 								}
 							}

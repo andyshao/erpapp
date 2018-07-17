@@ -1,91 +1,157 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>设置</title>		
-		<link href="../themes/css/mui.min.css" rel="stylesheet" />
-		<link href="../themes/css/app.css" rel="stylesheet" />
-	</head>
-	<body>
-		<div class="setup" id="app">
-			<ul class="mui-table-view mui-table-view-chevron">
-				<li class="mui-table-view-cell mui-media">
-					<a class="mui-navigate-right" href="javascript:void(0)">
-						<img class="mui-media-object mui-pull-left head-img" id="head-img" src="../themes/img/logo.png">
-						<div class="mui-media-body">
-							测试账号
-							<p class='mui-ellipsis' id="account-name">账号:</p>
-						</div>
-					</a>
-				</li>
-				<li class="mui-table-view-cell">
-								接收通知
-					<div class="mui-switch mui-active mui-switch-mini">
-						<div class="mui-switch-handle"></div>
-					</div>
-				</li>
-				<li class="mui-table-view-cell" @click="goPage('修改密码','editpwd','editpwd.html')">
-					<a href="javascript:void(0)" class="mui-navigate-right">修改密码</a>
-				</li>
-				<li class="mui-table-view-cell" @click="goPage('系统消息','message','message.html')">
-					<a href="javascript:void(0)" class="mui-navigate-right">系统消息</a>
-				</li>
-				<li class="mui-table-view-cell" @click="goPage('服务条款','server','server.html')">
-					<a href="javascript:void(0)" class="mui-navigate-right">服务条款</a>
-				</li>
-				<li class="mui-table-view-cell" @click="clearCache">
-					<a href="javascript:void(0)" class="mui-navigate-right">清除缓存</a>
-				</li>
-				<li class="mui-table-view-cell" @click="version">
-					<a href="javascript:void(0)">版本更新 <i class="mui-pull-right update">V{{version}}</i></a>
-				</li>
-			</ul>			
-			<div class="logout">
-				<button type="button" class="mui-btn mui-btn-danger mui-btn-block" @click="signOut">退出登录</button>
-			</div>
-		</div>
-		<script src="../themes/js/mui.min.js"></script>
-		<script src="../themes/js/vue.js"></script>
-		<script src="../themes/js/app.js"></script>
-		<script>
-			mui.init();
-			var os, vm = new Vue({
-				el: "#app",
-				data:{
-					version:''
-				},
-				methods:{
-					version:function(){
-						mui.toast('已经是最新版本~');
-					},
-					clearCache:function(){
-						mui.toast('清除缓存成功~');
-					},
-					goPage:function(title,id,url){
-						goWin(id,url,title);
-					},
-					signOut:function(){
-						SessionRemove('$LoginUser');
-						plus.runtime.restart();
-					}
-				}
-			});
-			mui.plusReady(function() {
-				rightClose('setindex');
-				os.init();
-			});
-			os={
-				init:function(){
-					baseAjax('app/api/user/version',null,function(res){
-						if(res.statusCode == 200) {		
-							vm.version=res.data[0].androidVersion;
-						}else{
-							mui.toast(res.msg);
-						}
-					})
-				}
-			}
-		</script>
-	</body>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>设置</title>
+    <link href="../themes/css/mui.min.css" rel="stylesheet" />
+    <link href="../themes/css/app.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="setup" id="app">
+        <ul class="mui-table-view mui-table-view-chevron">
+            <li class="mui-table-view-cell mui-media">
+                <a class="mui-navigate-right" href="javascript:void(0)">
+                    <img class="mui-media-object mui-pull-left head-img" id="head-img" src="../themes/img/logo.png">
+                    <div class="mui-media-body">
+                        测试账号
+                        <p class='mui-ellipsis' id="account-name">账号:</p>
+                    </div>
+                </a>
+            </li>
+            <li class="mui-table-view-cell" @click="bluetooth">
+                <a href="javascript:void(0)">蓝牙设置
+                    <i class="mui-pull-right update">V</i>
+                </a>
+            </li>
+            <li class="mui-table-view-cell">
+                接收通知
+                <div class="mui-switch mui-active mui-switch-mini">
+                    <div class="mui-switch-handle"></div>
+                </div>
+            </li>
+            <li class="mui-table-view-cell" @click="goPage('修改密码','editpwd','editpwd.html')">
+                <a href="javascript:void(0)" class="mui-navigate-right">修改密码</a>
+            </li>
+            <li class="mui-table-view-cell" @click="goPage('系统消息','message','message.html')">
+                <a href="javascript:void(0)" class="mui-navigate-right">系统消息</a>
+            </li>
+            <li class="mui-table-view-cell" @click="goPage('服务条款','server','server.html')">
+                <a href="javascript:void(0)" class="mui-navigate-right">服务条款</a>
+            </li>
+            <li class="mui-table-view-cell" @click="clearCache">
+                <a href="javascript:void(0)" class="mui-navigate-right">清除缓存</a>
+            </li>
+            <li class="mui-table-view-cell" @click="version">
+                <a href="javascript:void(0)">版本更新
+                    <i class="mui-pull-right update">V{{version}}</i>
+                </a>
+            </li>
+        </ul>
+        <div class="logout">
+            <button type="button" class="mui-btn mui-btn-danger mui-btn-block" @click="signOut">退出登录</button>
+        </div>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell" v-for="it in lyList" v-cloak>Item 1</li>
+        </ul>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell" v-for="it in lyListB" v-cloak>Item 1</li>
+        </ul>
+        <div style="text-align: center;">{{msg}}</div>
+    </div>
+    <script src="../themes/js/mui.min.js"></script>
+    <script src="../themes/js/vue.js"></script>
+    <script src="../themes/js/app.js"></script>
+    <script>
+        mui.init();
+        var os, vm = new Vue({
+            el: "#app",
+            data: {
+                version: '',
+                lyList: [],
+                lyListB: [],
+                msg: ''
+            },
+            methods: {
+                bluetooth: function () {
+                    openBluetooths();
+                    //searchDevices('a');
+                },
+                version: function () {
+                    mui.toast('已经是最新版本~');
+                },
+                clearCache: function () {
+                    mui.toast('清除缓存成功~');
+                },
+                goPage: function (title, id, url) {
+                    goWin(id, url, title);
+                },
+                signOut: function () {
+                    SessionRemove('$LoginUser');
+                    plus.runtime.restart();
+                }
+            }
+        });
+        mui.plusReady(function () {
+            rightClose('setindex');
+            os.init();
+        });
+        os = {
+            init: function () {
+                baseAjax('app/api/user/version', null, function (res) {
+                    if (res.statusCode == 200) {
+                        vm.version = res.data[0].androidVersion;
+                    } else {
+                        mui.toast(res.msg);
+                    }
+                })
+            }
+        }
+        var device = null,
+            BAdapter = null,
+            BluetoothAdapter = null,
+            uuid = null,
+            main = null,
+            bluetoothSocket = null;
+        var macAdd = [];
+
+        //打开安卓蓝牙
+        function openBluetooths() {
+            vm.msg = '正在打开蓝牙';
+            var main, Context, BluetoothManager, BluetoothAdapter, BManager, BAdapter;
+            main = plus.android.runtimeMainActivity();
+            Context = plus.android.importClass("android.content.Context");
+            BManager = main.getSystemService(Context.BLUETOOTH_SERVICE);
+            plus.android.importClass(BManager); //引入相关的method函数
+            BAdapter = BManager.getAdapter();
+            plus.android.importClass(BAdapter); //引入相关的method函数，这样之后才会有isEnabled函数支持
+            if (!BAdapter.isEnabled()) {
+                BAdapter.enable();
+                vm.msg = '开始搜索设备';
+            } else {
+                vm.msg = '蓝牙已打开';
+            }
+			bluetooth_list();
+        }
+		
+		//获取已配对的蓝牙列表
+        function bluetooth_list() {
+            var main = plus.android.runtimeMainActivity();
+            var Context = plus.android.importClass("android.content.Context");
+            var lists = BAdapter.getBondedDevices();
+            plus.android.importClass(lists);
+            var resultDiv = document.getElementById('bluetooth_list');
+            var iterator = lists.iterator();
+            plus.android.importClass(iterator);
+            while (iterator.hasNext()) {
+                var d = iterator.next();
+                plus.android.importClass(d);
+                console.log(d.getAddress());
+            }
+        }
+    </script>
+</body>
+
 </html>

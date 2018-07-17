@@ -52,6 +52,7 @@
 								</a>
 							</li>
 						</ul>
+						<div class="no-data" @click="more">{{resA.foot}}</div>
 					</div>
 					<div class="swiper-slide slidepage">
 						<ul class="mui-table-view inv-item report-item">
@@ -63,6 +64,7 @@
 								</a>
 							</li>
 						</ul>
+						<div class="no-data" @click="more">{{resB.foot}}</div>
 					</div>
 				</div>
 			</div>
@@ -98,12 +100,14 @@
 					resA:{
 						list:[],
 						page:1,
-						total:1
+						total:1,
+						foot:'正在加载数据~'
 					}, 
 					resB:{
 						list:[],
 						page:1,
-						total:1
+						total:1,
+						foot:'正在加载数据~'
 					},
 					whereParm:{
 						btime:'请选择开始时间',
@@ -111,13 +115,14 @@
 						list:[]
 					},
 					parm:{
+						page:1,
 						guid:'',
 						btime:'',
 						etime:'',
-						types:1,
-						brand:''
+						types:0,
+						brand:'',
+						orderType:1
 					},
-					loadfoot:'正在加载数据~',
 					brankCur:''
 				},
 				created:function(){
@@ -132,6 +137,22 @@
 					});
 				},
 				methods: {
+					more:function(){
+						var that=this;
+						if(curIndex==0){
+							if(that.resA.total>that.resA.page){								
+								that.parm.page=that.resA.page+1;
+								that.resA.page=that.resA.page+1;
+							}
+						}
+						if(curIndex==1){
+							if(that.resB.total>that.resB.page){								
+								that.parm.page=that.resB.page+1;
+								that.resB.page=that.resB.page+1;
+							}
+						}						
+						os.init();
+					},
 					findWhere:function(){
 						//确定查询
 						os.closeWhere();
@@ -175,8 +196,6 @@
 				},
 				init:function(){
 					app.loading();
-					if(curIndex==0){vm.parm.types=1;}
-					if(curIndex==1){vm.parm.types=2;}
 					if(vm.parm.btime!='' && vm.parm.etime!=''){vm.parm.types=3;}
 					baseAjax('/app/api/stock/inventory',vm.parm,function(res){
 						app.loadClose();
@@ -185,17 +204,17 @@
 								vm.resA.total = res.count;
 								if(vm.resA.page == 1) {		
 									vm.resA.list=res.data;
-									if(vm.resA.total==1 && res.data.length<6 || res.data.length==0){
-										vm.loadfoot='';
+									if(vm.resA.total==1 && res.data.length<6 || res.data.length==0 || vm.resA.total==1){
+										vm.resA.foot='';
 									}else{
-										vm.loadfoot='正在加载数据~';
+										vm.res.foot='点击加载数据~';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {
 										vm.resA.list.push(item);
 									}); 
 									if(vm.resA.page >= vm.resA.total) {
-										vm.loadfoot='没有数据了~';
+										vm.resA.foot='没有数据了~';
 									}
 								}
 							}
@@ -203,17 +222,17 @@
 								vm.resB.total = res.count;
 								if(vm.resB.page == 1) {		
 									vm.resB.list=res.data;
-									if(vm.resB.total==1 && res.data.length<6 || res.data.length==0){
-										vm.loadfoot='';
+									if(vm.resB.total==1 && res.data.length<6 || res.data.length==0 || vm.resA.total==1){
+										vm.resB.foot='';
 									}else{
-										vm.loadfoot='正在加载数据~';
+										vm.resB.foot='点击加载数据~';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {
 										vm.resB.list.push(item);
 									}); 
 									if(vm.resB.page >= vm.resB.total) {
-										vm.loadfoot='没有数据了~';
+										vm.resB.foot='没有数据了~';
 									}
 								}
 							}							
