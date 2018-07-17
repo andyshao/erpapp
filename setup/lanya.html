@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>蓝牙设置</title>
+    <link href="../themes/css/mui.min.css" rel="stylesheet" />
+    <link href="../themes/css/app.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <ul class="mui-table-view ly-wall">
+            <li class="mui-table-view-cell" v-for="it in lyList" v-cloak @click="connly(it)">{{it.name}}</li>
+        </ul>
+		<ul class="mui-table-view ly-wall">
+			<li class="mui-table-view-cell" v-for="it in okConn" v-cloak @click="connly(it)">{{it.name}}</li>
+		</ul>
+    </div>
+    <script src="../themes/js/mui.min.js"></script>
+    <script src="../themes/js/vue.js"></script>
+    <script src="../themes/js/app.js"></script>
+    <script>
+        mui.init();
+        var os, vm = new Vue({
+            el: "#app",
+            data: {
+                lyList: [],
+				okConn:[]
+            },
+            methods: {
+                connly: function (m) {
+                    log(m);
+                    //os.matchingMac(m);
+                }
+            }
+        });
+        mui.plusReady(function () {
+            //rightClose('bluetooth');
+            os.openBluetooth();	
+			os.searchDevices('1');
+        });
+
+        var main, Context, BluetoothManager, BluetoothAdapter, BManager, BAdapter, BluetoothDevice;
+        os = {
+            //打开安卓蓝牙
+            openBluetooth: function () {
+                main = plus.android.runtimeMainActivity();
+                Context = plus.android.importClass("android.content.Context");
+                BManager = main.getSystemService(Context.BLUETOOTH_SERVICE);
+                plus.android.importClass(BManager); //引入相关的method函数
+                BAdapter = BManager.getAdapter();
+                plus.android.importClass(BAdapter); //引入相关的method函数，这样之后才会有isEnabled函数支持
+                if (!BAdapter.isEnabled()) {
+                    BAdapter.enable();
+                    mui.toast('蓝牙已打开');
+                } else {
+                    mui.toast('蓝牙已打开');
+                }
+            },
+            searchDevices: function (mac) {
+                //注册类
+                var IntentFilter = plus.android.importClass('android.content.IntentFilter');
+                var BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");
+                var BluetoothDevice = plus.android.importClass("android.bluetooth.BluetoothDevice");
+                var BAdapter = BluetoothAdapter.getDefaultAdapter();
+                console.log("开始搜索设备");
+                var filter = new IntentFilter();
+                var bdevice = new BluetoothDevice();
+                var on = null;
+                var un = null;
+                BAdapter.startDiscovery(); //开启搜索
+                var receiver;
+                receiver = plus.android.implements('io.dcloud.android.content.BroadcastReceiver', {
+                    onReceive: function (context, intent) { //实现onReceiver回调函数
+                        plus.android.importClass(intent); //通过intent实例引入intent类，方便以后的‘.’操作
+                        console.log(intent.getAction()); //获取action
+                        if (intent.getAction() =="android.bluetooth.adapter.action.DISCOVERY_FINISHED") {
+                            main.unregisterReceiver(receiver); //取消监听
+                            console.log("搜索结束")
+                        } else {
+                            BleDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+							log("______"+BleDevice); 
+                            //判断是否配对
+                            if (BleDevice.getBondState() == bdevice.BOND_NONE) {
+                                console.log("未配对蓝牙设备：" + BleDevice.getName() + '    ' + BleDevice.getAddress());
+                                //参数如果跟取得的mac地址一样就配对
+                                if (mac == BleDevice.getAddress()) {
+                                    if (BleDevice.createBond()) { //配对命令.createBond()
+                                        console.log("配对成功");
+										//vm.okConn.push({mac:BleDevice.getAddress(),name:BleDevice.getName()});
+                                    }
+
+                                } else {
+                                    if (BleDevice.getName() != on) { //判断防止重复添加
+										//vm.lyList.push({mac:BleDevice.getAddress(),name:BleDevice.getName()});
+                                    }
+
+                                }
+                            } else {
+                                if (BleDevice.getName() != un) { //判断防止重复添加
+                                    console.log("已配对蓝牙设备：" + BleDevice.getName() + '    ' +
+                                        BleDevice.getAddress());
+									//vm.okConn.push({mac:BleDevice.getAddress(),name:BleDevice.getName()});
+                                }
+                            }
+                        }
+                    }
+                });
+
+                filter.addAction(bdevice.ACTION_FOUND);
+                filter.addAction(BAdapter.ACTION_DISCOVERY_STARTED);
+                filter.addAction(BAdapter.ACTION_DISCOVERY_FINISHED);
+                filter.addAction(BAdapter.ACTION_STATE_CHANGED);
+                main.registerReceiver(receiver, filter); //注册监听
+            }
+        }
+    </script>
+</body>
+
+</html>
