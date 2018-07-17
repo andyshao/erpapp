@@ -98,8 +98,11 @@
 							mui.toast('库存不足~');
 							return;
 						}
-						this.parm.goodsJson='[{GoodsGuid:"'+this.model.guid+'",Counts:'+this.parm.Counts+'}]';
+						//赋值给订单对象，给打印订单使用
+						vm.orderShop.list.push({goodName:this.model.brankName+this.model.styleName,goodMoney:parseInt(this.model.disPrice)*this.parm.Counts,counts:this.parm.Counts});
+						
 						//构建商品字符串
+						this.parm.goodsJson='[{GoodsGuid:"'+this.model.guid+'",Counts:'+this.parm.Counts+'}]';
 						//log(this.parm);
 						vm.btnText='正在提交订单';
 						vm.disabled=true;	
@@ -159,8 +162,6 @@
 								return;
 							}
 							vm.disabled=false;
-							//赋值给订单对象，给打印订单使用
-							vm.orderShop.list.push({goodName:res.good.brankName+res.good.styleName,goodMoney:parseInt(res.good.disPrice)});
 							
 							vm.model=res.good;
 							vm.model.shopName=userModel.shopName;

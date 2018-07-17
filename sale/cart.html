@@ -69,7 +69,7 @@
 					}
 				},
                 created: function () {		
-					log(saleCart);log(activity);
+					//log(saleCart);log(activity);
 					this.parm.ShopGuid=userModel.shopGuid;
 					this.parm.AdminGuid=userModel.staffGuid;
 					if(activity!=null){
@@ -96,10 +96,10 @@
 						$.each(saleCart,function(index,item){
 							tempJson.push({GoodsGuid:item.GoodsGuid,Counts:item.Counts});
 							//赋值给订单对象，给打印订单使用
-							that.orderShop.list.push({goodName:item.goodname,goodMoney:parseInt(item.money)*item.Counts});
+							that.orderShop.list.push({goodName:item.goodname,goodMoney:parseInt(item.money)*item.Counts,counts:item.Counts});
 						});	
 						this.parm.goodsJson=JSON.stringify(tempJson);
-						log(this.parm);
+						//log(this.parm);
 						this.disabled=true;											
 						baseAjax('app/api/sale/add/order',this.parm,function(res){							
 							if(res.statusCode==200){

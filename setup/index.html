@@ -21,7 +21,7 @@
                     </div>
                 </a>
             </li>
-            <li class="mui-table-view-cell" @click="goPage('蓝牙设置','bluetooth','bluetooth.html')">
+            <li class="mui-table-view-cell" @click="golanya">
                 <a href="javascript:void(0)" class="mui-navigate-right">蓝牙设置</a>
             </li>
             <li class="mui-table-view-cell">
@@ -51,13 +51,6 @@
         <div class="logout">
             <button type="button" class="mui-btn mui-btn-danger mui-btn-block" @click="signOut">退出登录</button>
         </div>
-        <ul class="mui-table-view">
-            <li class="mui-table-view-cell" v-for="it in lyList" v-cloak>Item 1</li>
-        </ul>
-        <ul class="mui-table-view">
-            <li class="mui-table-view-cell" v-for="it in lyListB" v-cloak>Item 1</li>
-        </ul>
-        <div style="text-align: center;">{{msg}}</div>
     </div>
     <script src="../themes/js/mui.min.js"></script>
     <script src="../themes/js/vue.js"></script>
@@ -68,15 +61,14 @@
             el: "#app",
             data: {
                 version: '',
-                lyList: [],
-                lyListB: [],
-                msg: ''
             },
             methods: {
-                bluetooth: function () {
-                    openBluetooths();
-                    //searchDevices('a');
-                },
+				golanya:function(){
+					goWinRbtn('bluetooth', 'bluetooth.html', '蓝牙设置', function () {
+						var ws = plus.webview.getWebviewById('bluetooth');
+						mui.fire(ws, 'customEvent');
+					}, '\ue462');
+				},
                 version: function () {
                     mui.toast('已经是最新版本~');
                 },
@@ -105,48 +97,6 @@
                         mui.toast(res.msg);
                     }
                 })
-            }
-        }
-        var device = null,
-            BAdapter = null,
-            BluetoothAdapter = null,
-            uuid = null,
-            main = null,
-            bluetoothSocket = null;
-        var macAdd = [];
-
-        //打开安卓蓝牙
-        function openBluetooths() {
-            vm.msg = '正在打开蓝牙';
-            var main, Context, BluetoothManager, BluetoothAdapter, BManager, BAdapter;
-            main = plus.android.runtimeMainActivity();
-            Context = plus.android.importClass("android.content.Context");
-            BManager = main.getSystemService(Context.BLUETOOTH_SERVICE);
-            plus.android.importClass(BManager); //引入相关的method函数
-            BAdapter = BManager.getAdapter();
-            plus.android.importClass(BAdapter); //引入相关的method函数，这样之后才会有isEnabled函数支持
-            if (!BAdapter.isEnabled()) {
-                BAdapter.enable();
-                vm.msg = '开始搜索设备';
-            } else {
-                vm.msg = '蓝牙已打开';
-            }
-			bluetooth_list();
-        }
-		
-		//获取已配对的蓝牙列表
-        function bluetooth_list() {
-            var main = plus.android.runtimeMainActivity();
-            var Context = plus.android.importClass("android.content.Context");
-            var lists = BAdapter.getBondedDevices();
-            plus.android.importClass(lists);
-            var resultDiv = document.getElementById('bluetooth_list');
-            var iterator = lists.iterator();
-            plus.android.importClass(iterator);
-            while (iterator.hasNext()) {
-                var d = iterator.next();
-                plus.android.importClass(d);
-                console.log(d.getAddress());
             }
         }
     </script>
