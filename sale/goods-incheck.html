@@ -12,15 +12,12 @@
 			<div class="good-wall">
 				<div class="good_code">
 					<div id="bcTarget"><img src="../themes/img/code.png" /></div>
-					<p>ASDF6645645-6645</p>
+					<p>{{code}}</p>
 				</div>
 				<div class="good-info">
-					<h4>无此商品</h4>
-					<p>款式：--　　尺码：--　　</p>
-					<p><span>商品单价</span><strong>￥50元</strong></p>
-					<p><span>账单编号</span><strong>64564645645645</strong></p>
-					<p><span>下单时间</span><strong class="red">2018-07-01</strong></p>
-					<p class="sign-price"><span>单品价格</span><strong><input type="number" /></strong></p>
+					<h4>{{model.brankName+model.styleName}}</h4>
+					<p>品牌：{{model.brankName}}　款式：{{model.styleName}}</p>
+					<p><span>商品单价</span><strong>￥{{parseInt(model.disPrice)}}元</strong></p>
 				</div>
 				<div class="mui-numbox buy-num" data-numbox-min='1' data-numbox-max='100'>
 					<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
@@ -30,7 +27,7 @@
 			</div>
 			<div class="barcode-foot mui-clearfix">
 				<button type="button" @click="cancel" class="mui-btn mui-btn-danger">返回清单</button>
-				<button type="button" @click="addList" class="mui-btn mui-btn-danger">加入清单</button>
+				<button type="button" :disabled="disabled" @click="addList" class="mui-btn mui-btn-danger">加入清单</button>
 			</div>
 		</div>
 		<script src="../themes/js/mui.min.js"></script>
@@ -38,43 +35,78 @@
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
-			var vm = new Vue({
+			var barJson=GetSession('$barcode'),userModel = GetSession('$LoginUser'),incheckJson=GetSession('$IncheckCart'),vm = new Vue({
 				el: "#app",
 				data: {
-					
+					code:'',
+					disabled:true,
+					model:{},
+					parm:{
+						Counts:1
+					}
 				},
 				methods: {
 					cancel:function(){
-						var wsbar = plus.webview.getWebviewById('barcode');
-						if(wsbar!=null){
-							wsbar.close();
-						}	
-						var wc=plus.webview.currentWebview();
-		    			wc.close();
+						mui.back();
 					},
 					addList:function(){
-						
+						this.parm.Counts=parseInt($("#goodnum").val());
+						//判断库存是否足够
+						if(this.parm.Counts>this.model.stockSum){
+							mui.toast('库存不足~');
+							return;
+						}
+						if(this.parm.summary==''){
+							mui.toast('请输入返货原因~');
+							return;
+						}
+						if(incheckJson==null){
+							SetSession('$IncheckCart',[{guid:this.model.guid,code:this.model.code,goodsName:this.model.brankName+this.model.styleName,counts:this.parm.Counts}]);
+						}else{
+							incheckJson.push({guid:this.model.guid,code:this.model.code,goodsName:this.model.brankName+this.model.styleName,counts:this.parm.Counts});
+							SetSession('$IncheckCart',incheckJson);
+						}
+						var ws= plus.webview.getWebviewById('incheckconfirm');
+						mui.fire(ws,'refreshList');
+						mui.back();
 					}
 				}
 			});	
 			mui.init({
 				swipeBack:true
 			});
-			mui('.det_item .mui-switch').each(function() {				
-				this.addEventListener('toggle', function(event) {
-					if(event.detail.isActive){
-						$(".memphone").removeClass('mui-hidden');
-					}else{
-						$(".memphone").addClass('mui-hidden');
-					}
-				});
+			mui.plusReady(function() {
+				os.init();
 			});
+			os={
+				init:function(){ 
+					app.loading();
+					vm.code=barJson.code;
+					baseAjax('app/api/goods/bycode',{shopGuid:userModel.shopGuid,code:barJson.code},function(res){
+						app.loadClose();
+						if(res.statusCode==200){
+							if(!res.good){
+								mui.toast('没有查询到商品~');
+								return;
+							}
+							vm.disabled=false;
+							vm.model=res.good;
+						}else{
+							mui.toast('服务器错误');
+						}
+					})
+				}
+			}
 			//重写返回键
 			mui.back=function(){
 				var wsbar = plus.webview.getWebviewById('barcode');
 				if(wsbar!=null){
 					wsbar.close();
 				}	
+				var wsinput = plus.webview.getWebviewById('manualInput');
+				if (wsinput != null) {
+					wsinput.close();
+				}
 				var wc=plus.webview.currentWebview();
     			wc.close();
 			}

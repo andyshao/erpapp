@@ -200,6 +200,10 @@
 				if(wsbar!=null){
 					wsbar.close();
 				}	
+				var wsinput = plus.webview.getWebviewById('manualInput');
+				if (wsinput != null) {
+					wsinput.close();
+				}
 				var wc=plus.webview.currentWebview();
     			wc.close();
 			}

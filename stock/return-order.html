@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>进货盘点清单</title>
+		<title>返货清单</title>
 		<link href="../themes/css/mui.min.css" rel="stylesheet" />
 		<link href="../themes/css/app.css" rel="stylesheet" />
-		<style>.fyt-add{bottom: 60px;}</style>
+		<style>
+			.fyt-add {
+				bottom: 60px;
+			}
+		</style>
 	</head>
+
 	<body>
 		<div id="app">
 			<div class="confirm-wall">
@@ -35,44 +41,43 @@
 		<script src="../themes/js/app.js"></script>
 		<script>
 			mui.init();
-			var userModel = GetSession('$LoginUser'),incheckCart=GetSession('$IncheckCart'),inlogGuid=GetSession('$InLogGuid'), vm = new Vue({
+			var userModel = GetSession('$LoginUser'),returnJson=GetSession('$ReturnCart'), vm = new Vue({
 				el: "#app",
-				data:{
+				data: {
 					list:[],
 					parm:{
 						ShopGuid:'',
-						InlogGuid:'',
+						StaffGuid:'',
 						goodsJson:''
 					},
 					disabled:true
 				},
 				created: function () {		
-					//log(incheckCart);
+					//log(returnJson);
 					this.parm.ShopGuid=userModel.shopGuid;
-					this.parm.InlogGuid=inlogGuid.guid;
-					if(incheckCart!=null){
+					this.parm.StaffGuid=userModel.staffGuid;
+					if(returnJson!=null){
 						this.disabled=false;
-						this.list=incheckCart;
+						this.list=returnJson;
 					}
 				},
 				methods: {
 					submits:function(){
-						if(incheckCart==null){
+						if(returnJson==null){
 							return;
 						}
 						var tempJson=[];
-						$.each(incheckCart,function(index,item){
-							tempJson.push({GoodsGuid:item.guid,Count:item.counts});
+						$.each(returnJson,function(index,item){
+							tempJson.push({GoodsGuid:item.guid,ReturnCount:item.counts,Summary:item.summary});
 						});	
 						this.parm.goodsJson=JSON.stringify(tempJson);
-						log(this.parm);
-						return;
+						//log(this.parm);
 						this.disabled=true;	
 						var that=this;
 						baseAjax('app/api/return/add/order',this.parm,function(res){							
 							if(res.statusCode==200){
 								//删除购物车
-								SessionRemove('$IncheckCart');
+								SessionRemove('$ReturnCart');
 								mui.toast('返货提交成功~');
 								mui.back();
 							}else{
@@ -87,7 +92,7 @@
 						mui.confirm('确定要清空清单里面的商品吗？', '', btnArray, function(e) {
 							if (e.index == 0) {
 								that.list=[];
-								SessionRemove('$IncheckCart');
+								SessionRemove('$ReturnCart');
 							}
 						});
 					},
@@ -96,16 +101,16 @@
 						var btnArray = ['是', '否'];
 						mui.confirm('确定要删除该商品吗？', '', btnArray, function(e) {
 							if (e.index == 0) {
-								$.each(incheckCart,function(index,item){
+								$.each(returnJson,function(index,item){
 									if(item.guid==m.guid){
-										incheckCart.splice(index,1);
+										returnJson.splice(index,1);
 									}
 								});								
-								that.list=incheckCart;
+								that.list=returnJson;
 								if(that.list.length==0){
-									SessionRemove('$IncheckCart');
+									SessionRemove('$ReturnCart');
 								}else{
-									SetSession('$IncheckCart',incheckCart);
+									SetSession('$ReturnCart',returnJson);
 								}								
 							} 						
 						})						
@@ -113,17 +118,16 @@
 				}
 			});
 			mui.plusReady(function() {
-				rightClose('incheckconfirm');	
 				window.addEventListener('refreshList', function(event) {
-					incheckCart=GetSession('$IncheckCart');
-					if(incheckCart!=null){
+					returnJson=GetSession('$ReturnCart');
+					if(returnJson!=null){
 						this.disabled=false;
-						vm.list=incheckCart;
+						vm.list=returnJson;
 					}
 				})
 				window.addEventListener('customEvent', function(event) {
 					SetSession('$barcode', {
-						type: 1,
+						type: 2,
 						code: ''
 					});
 					mui.openWindow({
@@ -140,4 +144,5 @@
 			});
 		</script>
 	</body>
+
 </html>

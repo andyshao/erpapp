@@ -43,6 +43,7 @@
             },
             methods: {
                 detail: function (m) {
+					SetSession('$InLogGuid',{guid:m.guid});
 					goWinRbtn('incheckconfirm', 'incheck-confirm.html', '进货盘点清单', function () {
 						var ws = plus.webview.getWebviewById('incheckconfirm');
 						mui.fire(ws, 'customEvent');
