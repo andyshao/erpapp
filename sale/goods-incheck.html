@@ -60,10 +60,21 @@
 							mui.toast('请输入返货原因~');
 							return;
 						}
+						var that=this;
 						if(incheckJson==null){
 							SetSession('$IncheckCart',[{guid:this.model.guid,code:this.model.code,goodsName:this.model.brankName+this.model.styleName,counts:this.parm.Counts}]);
 						}else{
-							incheckJson.push({guid:this.model.guid,code:this.model.code,goodsName:this.model.brankName+this.model.styleName,counts:this.parm.Counts});
+							var isCz=false;
+							$.each(incheckJson,function(index,item){
+								//判断商品是否存在,如果存在,直接增加数量
+								if(item.guid==that.model.guid){
+									item.counts+=that.parm.Counts;
+									isCz=true;
+								}
+							});
+							if(!isCz){
+								incheckJson.push({guid:this.model.guid,code:this.model.code,goodsName:this.model.brankName+this.model.styleName,counts:this.parm.Counts});
+							}
 							SetSession('$IncheckCart',incheckJson);
 						}
 						var ws= plus.webview.getWebviewById('incheckconfirm');

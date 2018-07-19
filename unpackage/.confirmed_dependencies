@@ -15,30 +15,36 @@
       "sale/day.html",
       "sale/barcode.html",
       "sale/return-order.html"
-    ]
+    ],
+    "resources": []
   },
   "setup/index.html": {
     "refer": [
       "setup/server.html",
       "setup/editpwd.html",
-      "setup/message.html"
-    ]
+      "setup/message.html",
+      "setup/bluetooth.html"
+    ],
+    "resources": []
   },
   "staff/index.html": {
     "refer": [
       "staff/add.html"
-    ]
+    ],
+    "resources": []
   },
   "stock/inlog.html": {
     "refer": [
       "stock/inlog-detail.html"
-    ]
+    ],
+    "resources": []
   },
   "stock/incheck.html": {
     "refer": [
       "stock/inlog-detail.html",
       "stock/incheck-confirm.html"
-    ]
+    ],
+    "resources": []
   },
   "sale/barcode.html": {
     "refer": [
@@ -48,42 +54,50 @@
       "sale/goods-canci.html",
       "sale/goods-return.html",
       "sale/goods-incheck.html"
-    ]
+    ],
+    "resources": []
   },
   "sale/goods.html": {
     "refer": [
       "sale/print.html"
-    ]
+    ],
+    "resources": []
   },
   "stock/incheck-confirm.html": {
     "refer": [
       "sale/barcode.html"
-    ]
+    ],
+    "resources": []
   },
   "stock/back-log.html": {
     "refer": [
       "sale/barcode.html"
-    ]
+    ],
+    "resources": []
   },
   "sale/return-order.html": {
     "refer": [
       "sale/barcode.html"
-    ]
+    ],
+    "resources": []
   },
   "stock/return-log.html": {
     "refer": [
       "sale/return-order.html",
       "stock/return-log-detail.html"
-    ]
+    ],
+    "resources": []
   },
   "member/index.html": {
     "refer": [
       "member/add.html"
-    ]
+    ],
+    "resources": []
   },
   "sale/goods-canci.html": {
     "refer": [
       "sale/print.html"
-    ]
+    ],
+    "resources": []
   }
 }
