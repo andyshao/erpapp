@@ -23,13 +23,13 @@
                 </a>
             </li>
         </ul>
-		<div class="no-data">{{loadfoot}}</div>
+        <div class="no-data">{{loadfoot}}</div>
         <div class="fyt-add" @click="add">
             <i class="mui-icon mui-icon-plusempty"></i>
         </div>
     </div>
     <script src="../themes/js/mui.min.js"></script>
-	<script src="../themes/js/zepto.min.js"></script>
+    <script src="../themes/js/zepto.min.js"></script>
     <script src="../themes/js/vue.js"></script>
     <script src="../themes/js/app.js"></script>
     <script>
@@ -47,20 +47,22 @@
                     }
                 },
                 methods: {
-					detail: function (m) {
-						SetSession('$ReturnOrderGuid',{guid:m.guid});
-						goWin('returndetail', 'return-log-detail.html', '返货订单详情');
-					},
-					add: function () {
-						goWinRbtn('returnorder', 'return-order.html', '返货清单', function () {
-							var ws = plus.webview.getWebviewById('returnorder');
-							mui.fire(ws, 'customEvent');
-						}, '\ue409');
-					}
+                    detail: function (m) {
+                        SetSession('$ReturnOrderGuid', {
+                            guid: m.guid
+                        });
+                        goWin('returndetail', 'return-log-detail.html', '返货订单详情');
+                    },
+                    add: function () {
+                        goWinRbtn('returnorder', 'return-order.html', '返货清单', function () {
+                            var ws = plus.webview.getWebviewById('returnorder');
+                            mui.fire(ws, 'customEvent');
+                        }, '\ue409');
+                    }
                 }
             });
         mui.plusReady(function () {
-			rightClose('retnrulog');
+            rightClose('retnrulog');
             plusReady();
             os.init();
             window.onscroll = function () {　　
@@ -99,6 +101,9 @@
                     app.loadClose();
                     if (res.statusCode == 200) {
                         vm.parm.total = res.count;
+						if(!res.data){
+							vm.loadfoot = '没有数据~';return;
+						}
                         if (vm.parm.page == 1) {
                             vm.list = res.data;
                             if (vm.parm.total == 1 && res.data.length < 6 || res.data.length == 0) {
@@ -123,7 +128,6 @@
                 })
             }
         }
-       
     </script>
 </body>
 
