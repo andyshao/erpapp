@@ -167,11 +167,12 @@
 					}
 					baseAjax('/app/api/stock/inventory', vm.parm, function(res) {
 						app.loadClose();
+						_self.endPullToRefresh();
 						if(res.statusCode == 200) {
 							vm.parm.total = res.count;
 							if(vm.parm.page == 1) {
 								vm.list = res.data;
-								if(vm.parm.total == 1 && res.data.length < 6 || res.data.length == 0 || vm.resA.total==1) {
+								if(vm.parm.total == 1 && res.data.length < 6 || res.data.length == 0 || vm.parm.total==1) {
 									vm.loadfoot = '';
 								} else {
 									vm.loadfoot = '正在加载数据~';
@@ -187,7 +188,6 @@
 						} else {
 							mui.toast(res.msg);
 						}
-						_self.endPullToRefresh();
 					})
 				},
 				dayTurnover:function(){
