@@ -127,19 +127,19 @@
 						list:[],
 						page:1,						
 						total:1,
-						foot:'正在加载数据~'
+						foot:'点击加载更多'
 					}, 
 					resB:{
 						list:[],
 						page:1,
 						total:1,
-						foot:'正在加载数据~'
+						foot:'点击加载更多'
 					},
 					resC:{
 						list:[],
 						page:1,
 						total:1,
-						foot:'正在加载数据~'
+						foot:'点击加载更多'
 					},
 					whereParm:{
 						btime:'请选择开始时间',
@@ -167,21 +167,23 @@
 							if(that.resA.total>that.resA.page){								
 								that.parm.page=that.resA.page+1;
 								that.resA.page=that.resA.page+1;
+								os.init();
 							}
 						}
 						if(curIndex==1){
 							if(that.resB.total>that.resB.page){								
 								that.parm.page=that.resB.page+1;
 								that.resB.page=that.resB.page+1;
+								os.init();
 							}
 						}
 						if(curIndex==2){
 							if(that.resC.total>that.resC.page){								
 								that.parm.page=that.resC.page+1;
 								that.resC.page=that.resC.page+1;
+								os.init();
 							}
-						}
-						os.init();
+						}						
 					},
 					findWhere:function(){
 						//确定查询
@@ -232,7 +234,7 @@
 									if(vm.resA.total==1 && res.data.length<6 || res.data.length==0 || vm.resA.total==1){
 										vm.resA.foot='';
 									}else{
-										vm.resA.foot='点击加载数据~';
+										vm.resA.foot='点击加载更多';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {
@@ -250,7 +252,7 @@
 									if(vm.resB.total==1 && res.data.length<6 || res.data.length==0){
 										vm.resB.foot='';
 									}else{
-										vm.resB.foot='点击加载数据~';
+										vm.resB.foot='点击加载更多';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {
@@ -268,7 +270,7 @@
 									if(vm.resC.total==1 && res.data.length<6 || res.data.length==0){
 										vm.resC.foot='';
 									}else{
-										vm.resC.foot='点击加载数据~';
+										vm.resC.foot='点击加载更多';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {
