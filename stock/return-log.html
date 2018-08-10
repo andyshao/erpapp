@@ -96,7 +96,7 @@
         os = {
             init: function () {
                 app.loading();
-                vm.parm.shopGuid = userModel.shopGuid;
+                vm.parm.guid = userModel.shopGuid;
                 baseAjax('app/api/return/order/list', vm.parm, function (res) {
                     app.loadClose();
                     if (res.statusCode == 200) {
