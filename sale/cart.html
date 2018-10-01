@@ -69,7 +69,8 @@
 					}
 				},
                 created: function () {		
-					//log(saleCart);log(activity);
+					//log(saleCart);
+					log(activity);
 					this.parm.ShopGuid=userModel.shopGuid;
 					this.parm.AdminGuid=userModel.staffGuid;
 					if(activity!=null){
@@ -82,7 +83,11 @@
 						var that=this;
 						$.each(saleCart,function(index,item){
 							that.foot.sums+=item.Counts;
-							that.foot.money+=parseInt(item.money)*item.Counts;
+							if(activity!=null && activity.method=='买一赠一'){
+								that.foot.money=parseInt(item.money);
+							}else{
+								that.foot.money+=parseInt(item.money)*item.Counts;
+							}
 						});	
 						this.parm.Counts=this.foot.sums;
 						this.foot.text='<h5>总金额：'+that.foot.money+'元</h5><p>共'+that.foot.sums+'件</p>';
@@ -99,7 +104,7 @@
 							that.orderShop.list.push({goodName:item.goodname,goodMoney:parseInt(item.money)*item.Counts,counts:item.Counts});
 						});	
 						this.parm.goodsJson=JSON.stringify(tempJson);
-						//log(this.parm);
+						log(this.parm);
 						this.disabled=true;											
 						baseAjax('app/api/sale/add/order',this.parm,function(res){							
 							if(res.statusCode==200){

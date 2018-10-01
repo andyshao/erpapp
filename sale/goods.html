@@ -17,7 +17,7 @@
 				<div class="good-info">
 					<h4>{{model.goodName}}</h4>
 					<p>品牌：{{model.brankName}}　款式：{{model.styleName}}　库存：{{model.stockSum}}</p>
-					<p><span>商品单价</span><strong>￥{{parseInt(model.disPrice)}}元</strong></p>
+					<p><span>商品单价</span><strong>￥{{parseInt(model.salePrice)}}元</strong></p>
 					<p><span>收款商家</span><strong>{{model.shopName}}</strong></p>
 					<p><span>下单时间</span><strong class="red">{{model.time}}</strong></p>
 					<p><span>折扣方式</span><strong>{{model.activity}}</strong></p>
@@ -56,6 +56,7 @@
 						brankName:'--',
 						styleName:'--',
 						disPrice:'0',
+						salePrice:'0',
 						shopName:'--',
 						time:'--',
 						activity:'--',
@@ -81,6 +82,10 @@
 				},
 				methods: {
 					goPrint:function(){
+						if(vm.activity.method=='买一赠一'){
+							mui.toast('买一增一活动必须加入购物车结算~');
+							return;
+						}
 						if(isUser){
 							//判断手机号码是否为空
 							if(!this.parm.UserGuid){
@@ -99,14 +104,15 @@
 							return;
 						}
 						//赋值给订单对象，给打印订单使用
-						vm.orderShop.list.push({goodName:this.model.brankName+this.model.styleName,goodMoney:parseInt(this.model.disPrice)*this.parm.Counts,counts:this.parm.Counts});
+						vm.orderShop.list.push({goodName:this.model.brankName+this.model.styleName,goodMoney:parseInt(this.model.salePrice)*this.parm.Counts,counts:this.parm.Counts});
 						
 						//构建商品字符串
 						this.parm.goodsJson='[{GoodsGuid:"'+this.model.guid+'",Counts:'+this.parm.Counts+'}]';
 						//log(this.parm);
 						vm.btnText='正在提交订单';
 						vm.disabled=true;	
-						var that=this;					
+						var that=this;		
+						log(this.parm);
 						baseAjax('app/api/sale/add/order',this.parm,function(res){							
 							if(res.statusCode==200){
 								that.orderShop.number=res.data;
@@ -125,18 +131,25 @@
 						var that=this;
 						if(saleCart==null){
 							//添加
-							SetSession('$SaleCart',[{GoodsGuid:this.model.guid,Counts:this.parm.Counts,money:this.model.disPrice,code:this.code,goodname:this.model.brankName+this.model.styleName}]);
+							SetSession('$SaleCart',[{GoodsGuid:this.model.guid,Counts:this.parm.Counts,money:this.model.salePrice,code:this.code,goodname:this.model.brankName+this.model.styleName}]);
 						}else{
+							var actCount=0;							
 							var isAddCount=false;
 							$.each(saleCart,function(index,item){
 								if(item.GoodsGuid==that.model.guid){
 									item.Counts+=that.parm.Counts;
 									isAddCount=true;
+									actCount+=item.Counts;
 								}
 							});
 							if(!isAddCount){
-								saleCart.push({GoodsGuid:this.model.guid,Counts:this.parm.Counts,money:this.model.disPrice,code:this.code,goodname:this.model.brankName+this.model.styleName});
-							}							
+								saleCart.push({GoodsGuid:this.model.guid,Counts:this.parm.Counts,money:this.model.salePrice,code:this.code,goodname:this.model.brankName+this.model.styleName});
+								actCount+=this.parm.Counts;
+							}	
+							if(actCount>2){
+								mui.toast('买一增一活动只能增加2件商品~');
+								return;
+							}
 							SetSession('$SaleCart',saleCart);
 						}
 						//log(GetSession('$SaleCart'));
@@ -156,7 +169,7 @@
 					baseAjax('app/api/goods/bycode',{shopGuid:userModel.shopGuid,code:barcode.code},function(res){
 						app.loadClose();
 						if(res.statusCode==200){
-							//log(res.good);
+							log(res.good);
 							if(!res.good){
 								mui.toast('没有查询到商品~');
 								return;
