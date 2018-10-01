@@ -146,7 +146,8 @@
 					"stock/back-log.html",
 					"sale/day.html",
 					"sale/barcode.html",
-					"sale/return-order.html"
+					"sale/return-order.html",
+					"sale/cart.html"
 				],
 				"priority": 0
 			},

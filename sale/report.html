@@ -101,13 +101,13 @@
 						list:[],
 						page:1,
 						total:1,
-						foot:'正在加载数据~'
+						foot:'点击加载更多'
 					}, 
 					resB:{
 						list:[],
 						page:1,
 						total:1,
-						foot:'正在加载数据~'
+						foot:'点击加载更多'
 					},
 					whereParm:{
 						btime:'请选择开始时间',
@@ -116,6 +116,7 @@
 					},
 					parm:{
 						page:1,
+						limit:30,
 						guid:'',
 						btime:'',
 						etime:'',
@@ -143,15 +144,17 @@
 							if(that.resA.total>that.resA.page){								
 								that.parm.page=that.resA.page+1;
 								that.resA.page=that.resA.page+1;
+								os.init();
 							}
 						}
 						if(curIndex==1){
 							if(that.resB.total>that.resB.page){								
 								that.parm.page=that.resB.page+1;
 								that.resB.page=that.resB.page+1;
+								os.init();
 							}
 						}						
-						os.init();
+						
 					},
 					findWhere:function(){
 						//确定查询
@@ -196,7 +199,7 @@
 				},
 				init:function(){
 					app.loading();
-					if(vm.parm.btime!='' && vm.parm.etime!=''){vm.parm.types=3;}
+					if(vm.parm.btime!='' && vm.parm.etime!=''){vm.parm.types=3;} 
 					baseAjax('/app/api/stock/inventory',vm.parm,function(res){
 						app.loadClose();
 						if(res.statusCode==200){ 
@@ -207,7 +210,7 @@
 									if(vm.resA.total==1 && res.data.length<6 || res.data.length==0 || vm.resA.total==1){
 										vm.resA.foot='';
 									}else{
-										vm.res.foot='点击加载数据~';
+										vm.resA.foot='点击加载更多';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {
@@ -225,7 +228,7 @@
 									if(vm.resB.total==1 && res.data.length<6 || res.data.length==0 || vm.resA.total==1){
 										vm.resB.foot='';
 									}else{
-										vm.resB.foot='点击加载数据~';
+										vm.resB.foot='点击加载更多';
 									}								
 								} else {	
 									$.each(res.data, function (i,item) {

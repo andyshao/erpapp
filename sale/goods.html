@@ -112,7 +112,10 @@
 						vm.btnText='正在提交订单';
 						vm.disabled=true;	
 						var that=this;		
+<<<<<<< HEAD
 						log(this.parm);
+=======
+>>>>>>> ef9a96a36d40cf1284abf647356810902d805676
 						baseAjax('app/api/sale/add/order',this.parm,function(res){							
 							if(res.statusCode==200){
 								that.orderShop.number=res.data;

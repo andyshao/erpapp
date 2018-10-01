@@ -87,6 +87,7 @@
 			}
 
 			function pulldownRefresh() {
+				vm.parm.page=1;
 				setTimeout(function() {
 					os.init();
 					os.dayTurnover();
@@ -109,6 +110,7 @@
 						},
 						parm: {
 							total: 1,
+							limit:30,
 							page:1,
 							guid: '',
 							btime: '',
@@ -179,7 +181,7 @@
 								}
 							} else {
 								$.each(res.data, function(i, item) {
-									vm.res.list.push(item);
+									vm.list.push(item);
 								});
 								if(vm.parm.page >= vm.parm.total) {
 									vm.loadfoot = '没有数据了~';

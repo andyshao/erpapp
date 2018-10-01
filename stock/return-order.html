@@ -121,7 +121,7 @@
 				window.addEventListener('refreshList', function(event) {
 					returnJson=GetSession('$ReturnCart');
 					if(returnJson!=null){
-						this.disabled=false;
+						vm.disabled=false;
 						vm.list=returnJson;
 					}
 				})

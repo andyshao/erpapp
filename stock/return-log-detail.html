@@ -18,7 +18,7 @@
         </ul>
     </div>
     <script src="../themes/js/mui.min.js"></script>
-	<script src="../themes/js/zepto.min.js"></script>
+    <script src="../themes/js/zepto.min.js"></script>
     <script src="../themes/js/vue.js"></script>
     <script src="../themes/js/app.js"></script>
     <script>
@@ -26,31 +26,32 @@
         mui.plusReady(function () {
             rightClose('returndetail');
         });
-        var userModel = GetSession('$LoginUser'),vm = new Vue({
-            el: "#app",
-            data: {
-				list:[],
-				parm:{
-					limit:2000,
-					guid:'',
-					shopGuid:''
-				}
-            },
-           created: function () {	
-				this.parm.shopGuid = userModel.shopGuid;
-                var guid=GetSession('$ReturnOrderGuid').guid;
-				app.loading();
-				var that=this;
-				baseAjax('app/api/return/goods/list',this.parm,function(res){
-					app.loadClose();
-					if(res.statusCode==200){
-						that.list=res.data;
-					}else{
-						mui.toast(res.message);
-					}
-				})
-            }
-        });
+        var userModel = GetSession('$LoginUser'),
+            vm = new Vue({
+                el: "#app",
+                data: {
+                    list: [],
+                    parm: {
+                        limit: 2000,
+                        guid: '',
+                        shopGuid: ''
+                    }
+                },
+                created: function () {
+                    this.parm.shopGuid = userModel.shopGuid;
+                    var guid = GetSession('$ReturnOrderGuid').guid;
+                    app.loading();
+                    var that = this;
+                    baseAjax('app/api/return/goods/list', this.parm, function (res) {
+                        app.loadClose();
+                        if (res.statusCode == 200) {
+                            that.list = res.data;
+                        } else {
+                            mui.toast(res.message);
+                        }
+                    })
+                }
+            });
     </script>
 </body>
 

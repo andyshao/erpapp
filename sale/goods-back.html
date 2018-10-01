@@ -12,7 +12,7 @@
 			<div class="good-wall">
 				<div class="good_code">
 					<div id="bcTarget"><img src="../themes/img/code.png" /></div>
-					<p>ASDF6645645-6645</p>
+					<p>{{code}}</p>
 				</div>
 				<div class="good-info">
 					<div class="mui-input-row thforms">
@@ -45,6 +45,7 @@
 			var barJson=GetSession('$barcode'),userModel = GetSession('$LoginUser'),vm = new Vue({
 				el: "#app",
 				data: {
+					code:'',
 					parm:{
 						OrderNumber:'',
 						ShopGuid:'',
@@ -56,6 +57,9 @@
 					},
 					disabled:false,
 					btnText:'退货'
+				},
+				created: function() {
+					this.code=barJson.code;
 				},
 				methods: {
 					submits:function(){
