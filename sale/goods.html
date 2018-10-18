@@ -82,7 +82,7 @@
 				},
 				methods: {
 					goPrint:function(){
-						if(vm.activity.method=='买一赠一'){
+						if(vm.activity!=null && vm.activity.method=='买一赠一'){
 							mui.toast('买一增一活动必须加入购物车结算~');
 							return;
 						}
@@ -135,18 +135,24 @@
 						}else{
 							var actCount=0;							
 							var isAddCount=false;
-							$.each(saleCart,function(index,item){
-								if(item.GoodsGuid==that.model.guid){
-									item.Counts+=that.parm.Counts;
-									isAddCount=true;
-									actCount+=item.Counts;
-								}
-							});
-							if(!isAddCount){
+							if(vm.activity!=null && vm.activity.method=='买一赠一'){
 								saleCart.push({GoodsGuid:this.model.guid,Counts:this.parm.Counts,money:this.model.salePrice,code:this.code,goodname:this.model.brankName+this.model.styleName});
 								actCount+=this.parm.Counts;
-							}	
-							if(actCount>2){
+							}else{
+								$.each(saleCart,function(index,item){
+									if(item.GoodsGuid==that.model.guid){
+										item.Counts+=that.parm.Counts;
+										isAddCount=true;
+										actCount+=item.Counts;
+									}
+								});
+								if(!isAddCount){
+									saleCart.push({GoodsGuid:this.model.guid,Counts:this.parm.Counts,money:this.model.salePrice,code:this.code,goodname:this.model.brankName+this.model.styleName});
+									actCount+=this.parm.Counts;
+								}	
+							}
+							
+							if(saleCart.length>2 && vm.activity!=null && vm.activity.method=='买一赠一'){
 								mui.toast('买一增一活动只能增加2件商品~');
 								return;
 							}
@@ -218,7 +224,7 @@
 					wsinput.close();
 				}
 				var wc=plus.webview.currentWebview();
-    			wc.close();
+				wc.close();
 			}
 		</script>
 	</body>

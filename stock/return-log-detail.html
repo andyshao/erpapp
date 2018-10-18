@@ -40,6 +40,7 @@
                 created: function () {
                     this.parm.shopGuid = userModel.shopGuid;
                     var guid = GetSession('$ReturnOrderGuid').guid;
+					this.parm.guid=guid;
                     app.loading();
                     var that = this;
                     baseAjax('app/api/return/goods/list', this.parm, function (res) {

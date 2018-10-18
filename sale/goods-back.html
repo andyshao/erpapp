@@ -15,7 +15,7 @@
 					<p>{{code}}</p>
 				</div>
 				<div class="good-info">
-					<div class="mui-input-row thforms">
+					<div class="mui-input-row thforms mui-hidden">
 						<label>退款金额</label>
 						<input type="number" v-model="parm.BackMoney" class="mui-input-clear" maxlength="5" placeholder="请输入金额">
 					</div>
@@ -67,9 +67,9 @@
 						this.parm.ShopGuid=userModel.shopGuid;
 						this.parm.AdminGuid=userModel.staffGuid;
 						this.parm.GoodsGuid=barJson.code;
-						if(this.parm.BackMoney==0){
+						/*if(this.parm.BackMoney==0){
 							mui.toast('请输入退款金额!'); return;
-						}
+						}*/
 						if(this.parm.OrderNumber==''){
 							mui.toast('请输入退款订单号!'); return;
 						}
@@ -79,7 +79,7 @@
 						this.disabled=true;
 						this.btnText='正在提交...';
 						var that=this;
-						//log(this.parm);return;						
+						log(this.parm);				
 						baseAjax('app/api/back/add/goods',this.parm,function(res){
 							if(res.statusCode==200){
 								mui.toast('退货信息提交成功~');
