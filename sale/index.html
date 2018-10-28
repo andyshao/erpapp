@@ -36,6 +36,9 @@
 						<div class="swiper-slide">
 							<span>满减销售</span>
 						</div>	
+						<div class="swiper-slide">
+							<span>买一赠一</span>
+						</div>	
 						<div id="bar" class="bar">
 							<div class="color"></div>
 						</div>
@@ -79,6 +82,18 @@
 							<div class="footer"><span><i class="iconfont icon-riqi"></i>{{it.addDate}}</span></div>
 						</div>	
 						<div class="no-data" @click="more">{{resC.foot}}</div>
+					</div>
+					<div class="swiper-slide slidepage">
+						<div class="sale-item" v-for="it in resD.list" v-cloak>
+							<div class="title">订单：{{it.number}}<span>￥{{it.realMoney}}</span></div>
+							<div class="sale-info" v-for="m in it.goods">
+								<h4>{{m.goodsName}}</h4>
+								<p>条形码：{{m.code}}</p>
+								<span>{{m.counts}}件</span>
+							</div>
+							<div class="footer"><span><i class="iconfont icon-riqi"></i>{{it.addDate}}</span></div>
+						</div>	
+						<div class="no-data" @click="more">{{resD.foot}}</div>
 					</div>
 				</div>
 			</div>			
@@ -141,6 +156,12 @@
 						total:1,
 						foot:'点击加载更多'
 					},
+					resD:{
+						list:[],
+						page:1,
+						total:1,
+						foot:'点击加载更多'
+					},
 					whereParm:{
 						btime:'请选择开始时间',
 						etime:'请选择结束时间'
@@ -183,7 +204,15 @@
 								that.resC.page=that.resC.page+1;
 								os.init();
 							}
-						}						
+						}
+						if(curIndex==3){
+							if(that.resC.total>that.resD.page){								
+								that.parm.page=that.resD.page+1;
+								that.resD.page=that.resD.page+1;
+								os.init();
+							}
+						}	
+											
 					},
 					findWhere:function(){
 						//确定查询
@@ -196,6 +225,9 @@
 						}
 						if(curIndex==2){
 							this.resC.page=1;
+						}
+						if(curIndex==3){
+							this.resD.page=1;
 						}
 						os.init();
 					},
@@ -223,7 +255,7 @@
 			os={
 				init:function(){
 					app.loading();
-					vm.parm.activityTypes=curIndex+1;
+					vm.parm.activityTypes=curIndex+1; //log(vm.parm);
 					baseAjax('app/api/sale/order/list',vm.parm,function(res){
 						app.loadClose();
 						if(res.statusCode==200){
@@ -248,7 +280,7 @@
 							if(curIndex==1){								
 								vm.resB.total = res.count;
 								if(vm.resB.page == 1) {		
-									vm.resB.list=res.data; log(res);
+									vm.resB.list=res.data; //log(res);
 									if(vm.resB.total==1 && res.data.length<15 || res.data.length==0){
 										vm.resB.foot='';
 									}else{
@@ -278,6 +310,24 @@
 									}); 
 									if(vm.resC.page >= vm.resC.total) {
 										vm.resC.foot='没有数据了~';
+									}
+								}
+							}
+							if(curIndex==3){								
+								vm.resD.total = res.count;
+								if(vm.resD.page == 1) {		
+									vm.resD.list=res.data;
+									if(vm.resD.total==1 && res.data.length<15 || res.data.length==0){
+										vm.resD.foot='';
+									}else{
+										vm.resD.foot='点击加载更多';
+									}								
+								} else {	
+									$.each(res.data, function (i,item) {
+										vm.resD.list.push(item);
+									}); 
+									if(vm.resD.page >= vm.resD.total) {
+										vm.resD.foot='没有数据了~';
 									}
 								}
 							}
@@ -350,7 +400,7 @@
 				resistanceRatio: 0,
 				on: {
 					touchMove: function() {
-						progress = this.progress
+						progress = this.progress;
 						bar.transition(0)
 						bar.transform('translateX(' + navSum * progress + 'px)')
 						//粉色255,72,145灰色51,51,51
@@ -371,6 +421,9 @@
 						}
 						if(curIndex==2){
 							if(vm.resC.list.length==0){os.init();}
+						}
+						if(curIndex==3){
+							if(vm.resD.list.length==0){os.init();}
 						}
 						activeSlidePosition = navSwiper.slides[curIndex].offsetLeft
 						//释放时导航粉色条移动过渡

@@ -44,54 +44,75 @@
 		<script src="../themes/js/app.js"></script>
 		<script>
 			mui.init();
-			var userModel = GetSession('$LoginUser'),vm = new Vue({
-				el: "#app",
-				data: {
-					model:{}
-				},
-				created: function () {
-					var model=GetSession('$memberModel');
-					if(model==null){
-						this.model.ShopGuid=userModel.shopGuid;
-						this.model.LoginPwd='123456';
-						return;
-					}					
-					this.model=model;
-				},
-				methods: {
-					submit:function(){
-						if(!this.model.userName){
-							mui.toast('请输入姓名！');return;
+			var userModel = GetSession('$LoginUser'),
+				vm = new Vue({
+					el: "#app",
+					data: {
+						model: {}
+					},
+					created: function() {
+						var model = GetSession('$memberModel');
+						if (model == null) {
+							this.model.ShopGuid = userModel.shopGuid;
+							this.model.LoginPwd = '123456';
+							return;
 						}
-						if(!this.model.sex){
-							mui.toast('请选择性别！');return;
-						}
-						if(!this.model.mobile){
-							mui.toast('请输入手机号码！');return;
-						}
-						var urls='app/api/user/useredit',model=GetSession('$memberModel');
-						if(model==null){urls='app/api/user/useradd';}
-						baseAjax(urls,this.model,function(res){
-							if(res.statusCode==200){
-								//释放缓存
-								SessionRemove('$memberModel');
-								mui.toast('修改成功');
-								//调用会员主页方法
-								var wsIndex=plus.webview.getWebviewById('memindex');
-								mui.fire(wsIndex,'refresh');
-								//关闭当前页
-								var ws=plus.webview.currentWebview();
-								ws.close();
-							}else{
-								mui.toast(res.message);
+						this.model = model;
+					},
+					methods: {
+						submit: function() {
+							if (!this.model.userName) {
+								mui.toast('请输入姓名！');
+								return;
 							}
-						})
+							if (!this.model.sex) {
+								mui.toast('请选择性别！');
+								return;
+							}
+							if (!this.model.mobile) {
+								mui.toast('请输入手机号码！');
+								return;
+							}
+							if (!isPoneAvailable(this.model.mobile)) {
+								mui.toast('请输入正确的手机号码！');
+								return;
+							}
+							var urls = 'app/api/user/useredit',
+								model = GetSession('$memberModel');
+							if (model == null) {
+								urls = 'app/api/user/useradd';
+							}
+							baseAjax(urls, this.model, function(res) {
+								if (res.statusCode == 200) {
+									//释放缓存
+									SessionRemove('$memberModel');
+									mui.toast('修改成功');
+									//调用会员主页方法
+									var wsIndex = plus.webview.getWebviewById('memindex');
+									mui.fire(wsIndex, 'refresh');
+									//关闭当前页
+									var ws = plus.webview.currentWebview();
+									ws.close();
+								} else {
+									mui.toast(res.message);
+								}
+							})
+						}
 					}
+				});
+
+			function isPoneAvailable($poneInput) {
+				var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+				if (!myreg.test($poneInput)) {
+					return false;
+				} else {
+					return true;
 				}
-			});
+			}
+
 			mui.plusReady(function() {
 				rightClose('memadd');
-			});	
+			});
 			(function($, doc) {
 				$.init();
 				$.ready(function() {
@@ -109,7 +130,7 @@
 					showUserPickerButton.addEventListener('tap', function(event) {
 						userPicker.show(function(items) {
 							userResult.value = items[0].value;
-							vm.model.sex=items[0].value;
+							vm.model.sex = items[0].value;
 						});
 					}, false);
 				});
@@ -118,8 +139,8 @@
 					var options = JSON.parse(optionsJson);
 					var picker = new $.DtPicker(options);
 					picker.show(function(rs) {
-						doc.getElementById('birthday').value=rs.text;
-						vm.model.birthday=rs.text;
+						doc.getElementById('birthday').value = rs.text;
+						vm.model.birthday = rs.text;
 						picker.dispose();
 					});
 				}, false);

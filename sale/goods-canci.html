@@ -6,6 +6,10 @@
 		<title>残次品销售</title>
 		<link href="../themes/css/mui.min.css" rel="stylesheet" />
 		<link href="../themes/css/app.css" rel="stylesheet" />
+		<style>
+			.det_item #uppz{float: right; width:35px; height: 35px; display: block; background-color: #ff6d6e; color: #FFFFFF; text-align: center; border-radius: 5px;}
+			.det_item #uppz i{font-size: 26px; position: relative; top: 4px;}
+		</style>
 	</head>
 	<body class="mui-body">
 		<div id="app">
@@ -17,15 +21,20 @@
 				<div class="good-info">
 					<h4>{{model.goodName}}</h4>
 					<p>品牌：{{model.brankName}}　款式：{{model.styleName}}　库存：{{model.stockSum}}</p>
-					<p><span>商品单价</span><strong>￥{{parseInt(model.disPrice)}}元</strong></p>
+					<p><span>商品单价</span><strong>￥{{parseInt(model.salePrice)}}元</strong></p>
 					<p><span>下单时间</span><strong class="red">{{model.time}}</strong></p>
 					<p class="sign-price"><span>单品价格</span><strong><input v-model="parm.RealMoney" type="number" /></strong></p>
 				</div>
 				<div class="det_item mui-clearfix" style="padding-left: 10px;"><span>是否会员</span>
-					<div class="mui-switch"><div class="mui-switch-handle"></div></div>
+					<div class="mui-switch">
+						<div class="mui-switch-handle"></div>
+					</div>
 				</div>
 				<div class="det_item memphone mui-hidden">
 					<input type="text" class="" v-model="parm.UserGuid" placeholder="请输入会员手机号码">
+				</div>
+				<div class="det_item mui-clearfix" style="padding-left: 10px;">
+					<span>上传凭证</span><samp id="uppz"><i class="mui-icon mui-icon-camera"></i></samp>
 				</div>
 				<div class="mui-numbox buy-num" data-numbox-min='1' data-numbox-max='100'>
 					<button class="mui-btn mui-btn-numbox-minus" type="button">-</button>
@@ -43,126 +52,301 @@
 		<script src="../themes/js/vue.js"></script>
 		<script src="../themes/js/app.js"></script>
 		<script>
-			var barJson=GetSession('$barcode'),userModel = GetSession('$LoginUser'),isUser=false, vm = new Vue({
-				el: "#app",
-				data: {
-					code:'',
-					model:{
-						brankName:'--',
-						styleName:'--',
-						disPrice:'0',
-						shopName:'--',
-						time:'--',
-						goodName:'无此商品'
+			//上传文件配置
+			var server = httpUrl + "app/api/sale/uploadimg";
+			var files = [],
+				imgBase64 = '';
+			var barJson = GetSession('$barcode'),
+				userModel = GetSession('$LoginUser'),
+				isUser = false,
+				vm = new Vue({
+					el: "#app",
+					data: {
+						code: '',
+						model: {
+							brankName: '--',
+							styleName: '--',
+							disPrice: '0',
+							shopName: '--',
+							time: '--',
+							goodName: '无此商品'
+						},
+						parm: {
+							ShopGuid: '',
+							AdminGuid: '',
+							UserGuid: '',
+							SaleType: 2,
+							Counts: 1,
+							RealMoney: 0,
+							goodsJson: ''
+						},
+						disabled: true,
+						btnText: '确认消费',
+						orderShop: {
+							number: '',
+							list: []
+						}
 					},
-					parm:{
-						ShopGuid:'',
-						AdminGuid:'',
-						UserGuid:'',
-						SaleType:2,
-						Counts:1,
-						RealMoney:0,
-						goodsJson:''
+					created: function() {
+						var that = this;
+						this.code = barJson.code;
+						app.loading();
+						baseAjax('app/api/goods/bycode', {
+							shopGuid: userModel.shopGuid,
+							code: barJson.code
+						}, function(res) {
+							app.loadClose();
+							if (res.statusCode == 200) {
+								if (!res.good) {
+									return;
+								}
+								//赋值给订单对象，给打印订单使用
+								that.orderShop.list.push({
+									goodName: res.good.brankName + res.good.styleName,
+									goodMoney: parseInt(res.good.salePrice)
+								});
+								that.disabled = false;
+								that.model = res.good;
+								that.model.shopName = userModel.shopName;
+								that.model.time = getNowFormatDate();
+								that.model.goodName = vm.model.brankName + vm.model.styleName;
+							} else {
+								mui.toast('服务器错误');
+							}
+						})
 					},
-					disabled:true,
-					btnText:'确认消费',
-					orderShop:{
-						number:'',
-						list:[]
-					}
-				},
-				created: function () {
-					var that=this;	
-					this.code=barJson.code;
-					app.loading();
-					baseAjax('app/api/goods/bycode',{shopGuid:userModel.shopGuid,code:barJson.code},function(res){
-						app.loadClose();
-						if(res.statusCode==200){
-							if(!res.good){
+					methods: {
+						cancel: function() {
+							var wsbar = plus.webview.getWebviewById('barcode');
+							if (wsbar != null) {
+								wsbar.close();
+							}
+							var wc = plus.webview.currentWebview();
+							wc.close();
+						},
+						goPrint: function() {
+							if(files.length == 0) {
+								mui.toast('请上传凭证~');
 								return;
-							}	
+							}
+							this.parm.Counts = parseInt($("#goodnum").val());
+							this.parm.ShopGuid = userModel.shopGuid;
+							this.parm.AdminGuid = userModel.staffGuid;
+							//判断库存是否足够
+							if (this.parm.Counts > this.model.stockSum) {
+								mui.toast('库存不足~');
+								return;
+							}
+							if (!this.parm.RealMoney) {
+								mui.toast('请输入价格~');
+								return;
+							}
+							if (isUser) {
+								//判断手机号码是否为空
+								if (!this.parm.UserGuid) {
+									mui.toast('请输入手机号码~');
+									return;
+								}
+							}
+
 							//赋值给订单对象，给打印订单使用
-							vm.orderShop.list.push({goodName:res.good.brankName+res.good.styleName,goodMoney:parseInt(res.good.disPrice)});
-							that.disabled=false;
-							that.model=res.good;
-							that.model.shopName=userModel.shopName;
-							that.model.time=getNowFormatDate();	
-							that.model.goodName=vm.model.brankName+vm.model.styleName;							
-						}else{
-							mui.toast('服务器错误');
+							//this.orderShop.list.push({goodName:this.brankName+this.styleName,goodMoney:this.parm.RealMoney});
+
+							this.parm.goodsJson = '[{GoodsGuid:"' + this.model.guid + '",Counts:' + this.parm.Counts + '}]';
+							vm.btnText = '正在提交订单';
+							vm.disabled = true;
+							var that = this;
+							//log(this.parm);return;
+							baseAjax('app/api/sale/add/order', this.parm, function(res) {
+								if (res.statusCode == 200) {
+									that.orderShop.number = res.data;
+									SetSession('$SaleOrder', that.orderShop);
+									upload(res.data);
+								} else {
+									mui.toast(res.message);
+								}
+								that.disabled = false;
+								that.btnText = '确认消费';
+							});
 						}
-					})
-				},
-				methods: {
-					cancel:function(){
-						var wsbar = plus.webview.getWebviewById('barcode');
-						if(wsbar!=null){
-							wsbar.close();
-						}	
-						var wc=plus.webview.currentWebview();
-		    			wc.close();
-					},
-					goPrint:function(){
-						this.parm.Counts=parseInt($("#goodnum").val());
-						this.parm.ShopGuid=userModel.shopGuid;
-						this.parm.AdminGuid=userModel.staffGuid;
-						//判断库存是否足够
-						if(this.parm.Counts>this.model.stockSum){
-							mui.toast('库存不足~');
-							return;
-						}
-						if(!this.parm.RealMoney){
-							mui.toast('请输入价格~');
-							return;
-						}
-						if(isUser){
-							//判断手机号码是否为空
-							if(!this.parm.UserGuid){
-								mui.toast('请输入手机号码~');
-								return;
-							}
-						}
-						this.parm.goodsJson='[{GoodsGuid:"'+this.model.guid+'",Counts:'+this.parm.Counts+'}]';
-						vm.btnText='正在提交订单';
-						vm.disabled=true;	
-						var that=this;					
-						baseAjax('app/api/sale/add/order',this.parm,function(res){							
-							if(res.statusCode==200){
-								that.orderShop.number=res.data;
-								SetSession('$SaleOrder',that.orderShop);
-								goWin('print','print.html','小票打印');
-							}else{
-								mui.toast(res.message);
-							}
-							that.disabled=false;
-							that.btnText='确认消费';
-						});
 					}
-				}
-			});	
-			mui('.det_item .mui-switch').each(function() {				
+				});
+			mui('.det_item .mui-switch').each(function() {
 				this.addEventListener('toggle', function(event) {
-					if(event.detail.isActive){
+					if (event.detail.isActive) {
 						$(".memphone").removeClass('mui-hidden');
-						isUser=true;
-					}else{
+						isUser = true;
+					} else {
 						$(".memphone").addClass('mui-hidden');
-						isUser=false;
+						isUser = false;
 					}
 				});
 			});
 			mui.init({
-				swipeBack:true
-			});			
+				swipeBack: true
+			});
 			//重写返回键
-			mui.back=function(){
+			mui.back = function() {
 				var wsbar = plus.webview.getWebviewById('barcode');
-				if(wsbar!=null){
+				if (wsbar != null) {
 					wsbar.close();
-				}	
-				var wc=plus.webview.currentWebview();
-    			wc.close();
+				}
+				var wc = plus.webview.currentWebview();
+				wc.close();
 			}
+			//开始上传
+			function upload(number) { 
+				var task = plus.uploader.createUpload(server, {
+						method: "POST"
+					},
+					function(t, status) { //上传完成
+						if(status == 200) {		
+							mui.toast("消费成功");
+							setTimeout(function(){
+								goWin('print', 'print.html', '小票打印');
+							},500);
+						} else {
+							mui.toast("连接超时，请检查您的网络设置");
+						}
+						isSubs=false;
+						$(".barcode-foot").find('button').attr('disabled', false).html('确认消费');
+					}
+				);
+				task.addData("orderNumber", "" + number + "");
+				for(var i = 0; i < files.length; i++) {
+					var f = files[i];
+					task.addFile(f.path, {
+						key: f.name
+					});
+				}
+				task.start();
+			}
+
+			//上传凭证
+			mui("#app").on("tap", "#uppz", function(e) {
+				if (mui.os.plus) {
+					var a = [{
+						title: "拍照"
+					}, {
+						title: "从手机相册选择"
+					}];
+					plus.nativeUI.actionSheet({
+						title: "上传凭证",
+						cancel: "取消",
+						buttons: a
+					}, function(b) {
+						switch (b.index) {
+							case 0:
+								break;
+							case 1:
+								getImage();
+								break;
+							case 2:
+								galleryImg();
+								break;
+							default:
+								break
+						}
+					})
+				}
+
+			});
+			//拍照
+			function getImage() {
+				var c = plus.camera.getCamera();
+				c.captureImage(function(e) {
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						compressImage(entry.toLocalURL());
+						mui.toast('图片添加成功~');
+					}, function(e) {
+						console.log("读取拍照文件错误：" + e.message);
+					});
+				}, function(s) {
+					console.log("error" + s);
+				}, {
+					filename: "_doc/head.jpg"
+				})
+			}
+			//选择相册
+			function galleryImg() {
+				plus.gallery.pick(function(a) {
+					plus.io.resolveLocalFileSystemURL(a, function(entry) {
+						plus.io.resolveLocalFileSystemURL("_doc/", function(root) {
+							root.getFile("head.jpg", {}, function(file) {
+								//文件已存在
+								file.remove(function() {
+									console.log("file remove success");
+									entry.copyTo(root, 'head.jpg', function(e) {
+											compressImage(entry.toLocalURL());
+											mui.toast('图片添加成功~');
+										},
+										function(e) {
+											console.log('copy image fail:' + e.message);
+										});
+								}, function() {
+									console.log("delete image fail:" + e.message);
+								});
+							}, function() {
+								//文件不存在
+								entry.copyTo(root, 'head.jpg', function(e) {
+										compressImage(entry.toLocalURL());
+										mui.toast('图片添加成功~');
+									},
+									function(e) {
+										console.log('copy image fail:' + e.message);
+									});
+							});
+						}, function(e) {
+							console.log("get _www folder fail");
+						})
+					}, function(e) {
+						console.log("读取拍照文件错误：" + e.message);
+					});
+				}, function(a) {}, {
+					filter: "image"
+				})
+			};
+			//压缩图片
+			function compressImage(path) {
+				plus.zip.compressImage({
+						src: path,
+						dst: "_doc/" + RndNum(6) + ".jpg",
+						quality: 80,
+						rotate:90,
+						width: '800px'
+					},
+					function(e) {
+						var target = e.target; // 压缩转换后的图片url路径，以"file://"开头
+						files = [];
+						files.push({
+							name: "uploadkey",
+							path: target
+						});
+						var size = e.size; 
+						//获得base64
+						/* var reader = new plus.io.FileReader();
+                        reader.onloadend = function (e) {
+                            var speech = e.target.result;
+							console.log(speech);
+                        };
+						reader.readAsDataURL(path); */
+					},
+					function(error) {
+						mui.toast("Compress error!");
+					});
+			}
+			//生成随机数
+			function RndNum(n) {
+				var rnd = "";
+				for (var i = 0; i < n; i++)
+				{
+					rnd += Math.floor(Math.random() * 10);
+				}
+				var oDate = new Date();
+				var number=oDate.getFullYear()+''+(oDate.getMonth()+1)+''+oDate.getDate()+''+oDate.getHours()+''+oDate.getMinutes()+''+oDate.getSeconds();
+				return number+rnd;
+			}
+			
 		</script>
 	</body>
 </html>
