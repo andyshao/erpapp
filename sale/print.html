@@ -103,7 +103,9 @@
             swipeBack: true
         });
         mui.plusReady(function () {
-            os.openBluetooth();
+        	if(plus.os.name=="Android"){
+			     os.openBluetooth();       	
+			}
         });
         os = {
             //打开安卓蓝牙
