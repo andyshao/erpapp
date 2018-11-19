@@ -123,7 +123,7 @@ function log(data) {
     console.log(JSON.stringify(data));
 }
 
-var httpUrl = "http://api.zihenggj.com/",
+var httpUrl = "",
     natiopen = null,
     nodata = '没有数据了',
     timeouts = 20000; //超时请求时间为10秒
